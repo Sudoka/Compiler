@@ -1,0 +1,5 @@
+int x = 5;
+int y = (x>1);
+int z=2;
+
+print !y || z*=3;

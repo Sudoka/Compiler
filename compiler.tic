@@ -1,0 +1,5 @@
+main: 
+val_copy 20 s1
+val_copy s1 s0
+val_copy 0 s3
+val_copy s3 s2
