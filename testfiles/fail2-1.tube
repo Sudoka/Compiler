@@ -1,6 +1,0 @@
-# Redeclare a variable in a deeper scope.
-
-int a = 20;
-{
-  int a = 0;
-}

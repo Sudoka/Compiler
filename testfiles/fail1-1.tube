@@ -1,2 +1,0 @@
-# Comparisons must be syntactically correct.
-int a = 1 < < 2;

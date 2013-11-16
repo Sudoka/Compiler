@@ -1,0 +1,31 @@
+# Can we view the normal distribution we built?
+# Warning: This may take a few seconds to run.
+
+int loop_count = 3000;
+int num_bins = 10;
+
+array(int) bin_counts;
+bin_counts.resize(num_bins);
+
+while (loop_count > 0) {
+  int total = 0;
+  int sample_count = 10;
+  int max_rand = 1000;
+  int dilation = sample_count * max_rand / num_bins;
+
+  while (sample_count > 0) {
+    total = total + random(max_rand);
+    sample_count -= 1;
+  }
+
+  total = total / dilation;
+  bin_counts[total] += 1;
+  loop_count -= 1;
+}
+
+# Now print!
+int index = 0;
+while (index < bin_counts.size()) {
+  print "bin_counts[", index, "] = ", bin_counts[index];
+  index = index + 1;
+}

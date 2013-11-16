@@ -1,3 +1,0 @@
-# Test the less-than operator
-int a = 5;
-print a < 10;  # Should print a 1!

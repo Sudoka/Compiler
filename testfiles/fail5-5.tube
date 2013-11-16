@@ -1,2 +1,0 @@
-# The internal type cannot simply be another array.
-array(array(int)) my_array;

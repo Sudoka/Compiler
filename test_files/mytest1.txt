@@ -1,0 +1,5 @@
+int x = 25;
+
+x += random(10);
+
+print x;

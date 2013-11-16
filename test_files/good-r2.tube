@@ -1,0 +1,12 @@
+# Can we build an artificial normal distribution?
+int loop_count = 0;
+while (loop_count < 10) {
+  int total = 0;
+  int sample_count = 10;
+  while (sample_count > 0) {
+    total = total + random(1000);
+    sample_count -= 1;
+  }
+  print total;
+  loop_count += 1;
+}
