@@ -64,6 +64,8 @@ program:      statement_list {
                  $1->CompileTubeIC(symbol_table, ic_array); // Traverse AST, filling ic_array with code
                  ofstream out_file(out_filename.c_str());   // Open the output file
                  ic_array.PrintIC(out_file);                // Write IC to output file!
+
+                 //
               }
 	     ;
 

@@ -1,5 +1,2 @@
-int x = 25;
-
-x += random(10);
-
+int x = random(10) - 5;
 print x;
