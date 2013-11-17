@@ -1,2 +1,22 @@
-int x = random(10) - 5;
-print x;
+array(char) my_array;
+array(int) my_second_array;
+array(int) my_third_array;
+
+my_array.resize(10);
+my_array.resize(20);
+
+my_second_array.resize(23);
+my_second_array.resize(25);
+
+my_third_array.resize(20);
+my_third_array.resize(30);
+
+int loop = 0;
+while (loop < my_array.size())
+{
+  my_array[loop] = '-';
+  print "Hello, world, I am #", loop;
+  loop+=1;
+}
+
+print my_array;

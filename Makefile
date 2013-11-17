@@ -6,8 +6,8 @@ LEX = flex
 
 # Link the object files together into the final executable.
 
-tube5: tube5-lexer.o tube5-parser.tab.o ast.o ic.o type_info.o
-	$(GCC) tube5-parser.tab.o tube5-lexer.o ast.o ic.o type_info.o -o tube5 -ll -ly
+tube5: tube5-lexer.o tube5-parser.tab.o ast.o ic.o type_info.o instr_info.o
+	$(GCC) tube5-parser.tab.o tube5-lexer.o ast.o ic.o type_info.o instr_info.o -o tube5 -ll -ly
 
 # Use the lex and yacc templates to build the C++ code files.
 
@@ -31,6 +31,9 @@ ast.o: ast.cc ast.h symbol_table.h
 
 ic.o: ic.cc ic.h symbol_table.h
 	$(GCC) $(CFLAGS) -c ic.cc
+
+instr_info.o: instr_info.h instr_info.cc
+	$(GCC) $(CFLAGS) -c instr_info.cc
 
 type_info.o: type_info.h type_info.cc
 	$(GCC) $(CFLAGS) -c type_info.cc

@@ -77,7 +77,7 @@ private:
 
   // Figure out the next memory position to use.  Ideally, we should be
   // recycling these!!
-  int GetNextID() { return next_var_id++; }
+  int GetNextID() { return ++next_var_id; }
 public:
   symbolTable() : cur_scope(0), next_var_id(0), next_label_id(0) { 
     scope_info.push_back(new vector<tableEntry *>);
@@ -114,6 +114,8 @@ public:
     sstm << prefix << next_label_id++;
     return sstm.str();
   }
+  
+  void ResetLabelID() { next_label_id = 0; }
 
   int GetWhileDepth() { return (int) while_end_stack.size(); }
   void PushWhileEndLabel(const string & end_label) { while_end_stack.push_back(end_label); }

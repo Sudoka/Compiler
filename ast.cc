@@ -54,7 +54,7 @@ tableEntry * ASTNode_Literal::CompileTubeIC(symbolTable & table, IC_Array & ica)
 {
   tableEntry * out_var = table.AddTempEntry(type);
   if (type == Type::INT || type == Type::CHAR) {
-    ica.Add("val_copy", lexeme, out_var->GetVarID());
+    ica.Add(Instr::VAL_COPY, lexeme, out_var->GetVarID());
   } else if (type == Type::STRING) {
     // Drop the beginning and ending quotes and process escape chars.
     string str_value = "";
@@ -73,7 +73,7 @@ tableEntry * ASTNode_Literal::CompileTubeIC(symbolTable & table, IC_Array & ica)
 
     stringstream size_str;
     size_str << str_value.size();
-    ica.AddArray("ar_set_siz", out_var->GetVarID(), size_str.str());
+    ica.AddArray(Instr::AR_SET_SIZ, out_var->GetVarID(), size_str.str());
     for (int i = 0; i < (int) str_value.size(); i++) {
       stringstream set_val;
       switch (str_value[i]) {
@@ -86,7 +86,7 @@ tableEntry * ASTNode_Literal::CompileTubeIC(symbolTable & table, IC_Array & ica)
 
       stringstream idx_str;
       idx_str << i;
-      ica.AddArray("ar_set_idx", out_var->GetVarID(), idx_str.str(), set_val.str());
+      ica.AddArray(Instr::AR_SET_IDX, out_var->GetVarID(), idx_str.str(), set_val.str());
     }
   } else {
     cerr << "INTERNAL ERROR: Unknown type!" << endl;
@@ -124,9 +124,9 @@ tableEntry * ASTNode_Assign::CompileTubeIC(symbolTable & table,
   if (type == Type::INT || type == Type::CHAR) {
     // Determine if the lhs is part of an array
     if (lhs_var->GetArrayID() == -1) {    // NOT an array on the LHS!
-      ica.Add("val_copy", rhs_var->GetVarID(), lhs_var->GetVarID());
+      ica.Add(Instr::VAL_COPY, rhs_var->GetVarID(), lhs_var->GetVarID());
     } else {                              // An array on the LHS!
-      ica.AddArray("ar_set_idx", lhs_var->GetArrayID(), lhs_var->GetIndexID(), rhs_var->GetVarID());
+      ica.AddArray(Instr::AR_SET_IDX, lhs_var->GetArrayID(), lhs_var->GetIndexID(), rhs_var->GetVarID());
     }
   } else if (type == Type::INT_ARRAY || type == Type::STRING) {
     int size_id = table.GetTempVarID();
@@ -135,16 +135,16 @@ tableEntry * ASTNode_Assign::CompileTubeIC(symbolTable & table,
     string start_label = table.NextLabelID("copy_array_start_");
     string end_label = table.NextLabelID("copy_array_end_");
     
-    ica.Add("val_copy", "0", index_id, -1, "Init loop variable for copying array.");
-    ica.AddArray("ar_get_siz", rhs_var->GetVarID(), size_id, -1, "Save size of RHS array into variable.");
-    ica.AddArray("ar_set_siz", lhs_var->GetVarID(), size_id, -1, "Make LHS same size as RHS.");
+    ica.Add(Instr::VAL_COPY, "0", index_id, -1, "Init loop variable for copying array.");
+    ica.AddArray(Instr::AR_GET_SIZ, rhs_var->GetVarID(), size_id, -1, "Save size of RHS array into variable.");
+    ica.AddArray(Instr::AR_SET_SIZ, lhs_var->GetVarID(), size_id, -1, "Make LHS same size as RHS.");
     ica.AddLabel(start_label);
-    ica.Add("test_equ", index_id, size_id, entry_id, "Test if we are finished yet...");
-    ica.Add("jump_if_n0", entry_id, end_label, -1, " ...and jump if we are.");
-    ica.AddArray("ar_get_idx", rhs_var->GetVarID(), index_id, entry_id, "Collect the value at next index.");
-    ica.AddArray("ar_set_idx", lhs_var->GetVarID(), index_id, entry_id, "Write this entry to the LHS!");
-    ica.Add("add", index_id, "1", index_id, "Increment to the next index.");
-    ica.Add("jump", start_label, -1, -1, " ...and jump if not.");
+    ica.Add(Instr::TEST_EQU, index_id, size_id, entry_id, "Test if we are finished yet...");
+    ica.Add(Instr::JUMP_IF_N0, entry_id, end_label, -1, " ...and jump if we are.");
+    ica.AddArray(Instr::AR_GET_IDX, rhs_var->GetVarID(), index_id, entry_id, "Collect the value at next index.");
+    ica.AddArray(Instr::AR_SET_IDX, lhs_var->GetVarID(), index_id, entry_id, "Write this entry to the LHS!");
+    ica.Add(Instr::ADD, index_id, "1", index_id, "Increment to the next index.");
+    ica.Add(Instr::JUMP, start_label, -1, -1, " ...and jump if not.");
     ica.AddLabel(end_label);
         
     table.FreeTempVarID(size_id);
@@ -190,10 +190,10 @@ tableEntry * ASTNode_Math1::CompileTubeIC(symbolTable & table, IC_Array & ica)
 
   switch (math_op) {
   case '-':
-    ica.Add("mult", in_var->GetVarID(), "-1", out_var->GetVarID());
+    ica.Add(Instr::MULT, in_var->GetVarID(), "-1", out_var->GetVarID());
     break;
   case '!':
-    ica.Add("test_equ", in_var->GetVarID(), "0", out_var->GetVarID());
+    ica.Add(Instr::TEST_EQU, in_var->GetVarID(), "0", out_var->GetVarID());
     break;
   default:
     cerr << "Internal compiler error: unknown Math1 operation '" << math_op << "'." << endl;
@@ -258,17 +258,17 @@ tableEntry * ASTNode_Math2::CompileTubeIC(symbolTable & table, IC_Array & ica)
   int o3 = out_var->GetVarID();
 
   // Determine the correct operation...  
-  if (math_op == '+') { ica.Add("add", i1, i2, o3); }
-  else if (math_op == '-') { ica.Add("sub",  i1, i2, o3); }
-  else if (math_op == '*') { ica.Add("mult", i1, i2, o3); }
-  else if (math_op == '/') { ica.Add("div",  i1, i2, o3); }
-  else if (math_op == '%') { ica.Add("mod",  i1, i2, o3); }
-  else if (math_op == COMP_EQU)  { ica.Add("test_equ",  i1, i2, o3); }
-  else if (math_op == COMP_NEQU) { ica.Add("test_nequ", i1, i2, o3); }
-  else if (math_op == COMP_GTR)  { ica.Add("test_gtr",  i1, i2, o3); }
-  else if (math_op == COMP_GTE)  { ica.Add("test_gte",  i1, i2, o3); }
-  else if (math_op == COMP_LESS) { ica.Add("test_less", i1, i2, o3); }
-  else if (math_op == COMP_LTE)  { ica.Add("test_lte",  i1, i2, o3); }
+  if (math_op == '+') { ica.Add(Instr::ADD, i1, i2, o3); }
+  else if (math_op == '-') { ica.Add(Instr::SUB,  i1, i2, o3); }
+  else if (math_op == '*') { ica.Add(Instr::MULT, i1, i2, o3); }
+  else if (math_op == '/') { ica.Add(Instr::DIV,  i1, i2, o3); }
+  else if (math_op == '%') { ica.Add(Instr::MOD,  i1, i2, o3); }
+  else if (math_op == COMP_EQU)  { ica.Add(Instr::TEST_EQU,  i1, i2, o3); }
+  else if (math_op == COMP_NEQU) { ica.Add(Instr::TEST_NEQU, i1, i2, o3); }
+  else if (math_op == COMP_GTR)  { ica.Add(Instr::TEST_GTR,  i1, i2, o3); }
+  else if (math_op == COMP_GTE)  { ica.Add(Instr::TEST_GTE,  i1, i2, o3); }
+  else if (math_op == COMP_LESS) { ica.Add(Instr::TEST_LESS, i1, i2, o3); }
+  else if (math_op == COMP_LTE)  { ica.Add(Instr::TEST_LTE,  i1, i2, o3); }
   else {
     cerr << "INTERNAL ERROR: Unknown Math2 type '" << math_op << "'" << endl;
   }
@@ -314,14 +314,14 @@ tableEntry * ASTNode_Bool2::CompileTubeIC(symbolTable & table, IC_Array & ica)
   string end_label = table.NextLabelID("end_bool_");
 
   // Convert the first answer to a 0 or 1 and put it in out_var.
-  ica.Add("test_nequ", in_var1->GetVarID(), "0", out_var->GetVarID());
+  ica.Add(Instr::TEST_NEQU, in_var1->GetVarID(), "0", out_var->GetVarID());
 
   // Determine the correct operation for short-circuiting...  
   if (bool_op == '&') {
-    ica.Add("jump_if_0", out_var->GetVarID(), end_label, -1, "AND!");
+    ica.Add(Instr::JUMP_IF_0, out_var->GetVarID(), end_label, -1, "AND!");
   }
   else if (bool_op == '|') {
-    ica.Add("jump_if_n0", out_var->GetVarID(), end_label, -1, "OR!");
+    ica.Add(Instr::JUMP_IF_N0, out_var->GetVarID(), end_label, -1, "OR!");
   }
   else { cerr << "INTERNAL ERROR: Unknown Bool2 type '" << bool_op << "'" << endl; }
 
@@ -329,7 +329,7 @@ tableEntry * ASTNode_Bool2::CompileTubeIC(symbolTable & table, IC_Array & ica)
   tableEntry * in_var2 = children[1]->CompileTubeIC(table, ica);
 
   // Convert the second answer to a 0 or 1 and put it in out_var.
-  ica.Add("test_nequ", in_var2->GetVarID(), "0", out_var->GetVarID());
+  ica.Add(Instr::TEST_NEQU, in_var2->GetVarID(), "0", out_var->GetVarID());
 
   // Leave the output label to jump to.
   ica.AddLabel(end_label);
@@ -373,7 +373,7 @@ tableEntry * ASTNode_ArrayAccess::CompileTubeIC(symbolTable & table, IC_Array & 
   tableEntry * out_var = table.AddTempEntry(type);
     
   out_var->SetArrayIndex(in_var0->GetVarID(), in_var1->GetVarID());
-  ica.AddArray("ar_get_idx", in_var0->GetVarID(), in_var1->GetVarID(), out_var->GetVarID());
+  ica.AddArray(Instr::AR_GET_IDX, in_var0->GetVarID(), in_var1->GetVarID(), out_var->GetVarID());
 
   if (in_var0->GetTemp() == true) table.RemoveEntry( in_var0 );
   if (in_var1->GetTemp() == true) table.RemoveEntry( in_var1 );
@@ -381,6 +381,29 @@ tableEntry * ASTNode_ArrayAccess::CompileTubeIC(symbolTable & table, IC_Array & 
   return out_var;
 }
 
+/////////////////////
+// ASTNode_Random
+
+ASTNode_Random::ASTNode_Random(ASTNode *in)
+  : ASTNode_BaseChildren(Type::INT)
+{
+  if (in->GetType() != Type::INT) {
+    yyerror ("random argument must be of type int");
+    exit(1);
+  }
+
+  children.push_back(in);
+}
+
+tableEntry * ASTNode_Random::CompileTubeIC(symbolTable & table, IC_Array & ica)
+{
+  tableEntry * in_var = children[0]->CompileTubeIC(table, ica);
+  tableEntry * out_var = table.AddTempEntry(type);
+
+  ica.Add(Instr::RANDOM, in_var->GetVarID(), out_var->GetVarID());
+
+  return out_var;
+}
 
 //////////////////////
 // ASTNode_Method
@@ -417,11 +440,11 @@ tableEntry * ASTNode_Method::CompileTubeIC(symbolTable & table, IC_Array & ica)
   tableEntry * out_var = table.AddTempEntry(type);
 
   if (name == "size") {
-    ica.AddArray("ar_get_siz", array_var->GetVarID(), out_var->GetVarID());
+    ica.AddArray(Instr::AR_GET_SIZ, array_var->GetVarID(), out_var->GetVarID());
   }
   else if (name == "resize") {
     tableEntry * size_var = children[1]->CompileTubeIC(table, ica);
-    ica.AddArray("ar_set_siz", array_var->GetVarID(), size_var->GetVarID());
+    ica.AddArray(Instr::AR_SET_SIZ, array_var->GetVarID(), size_var->GetVarID());
     if (size_var->GetTemp() == true) table.RemoveEntry( size_var );
   }
   else {
@@ -481,7 +504,7 @@ tableEntry * ASTNode_If::CompileTubeIC(symbolTable & table, IC_Array & ica)
   tableEntry * in_var0 = children[0]->CompileTubeIC(table, ica);
 
   // If the condition is false, jump to else.  Otherwise continue through if.
-  ica.Add("jump_if_0", in_var0->GetVarID(), else_label);
+  ica.Add(Instr::JUMP_IF_0, in_var0->GetVarID(), else_label);
 
   if (children[1]) {
     tableEntry * in_var1 = children[1]->CompileTubeIC(table, ica);
@@ -489,7 +512,7 @@ tableEntry * ASTNode_If::CompileTubeIC(symbolTable & table, IC_Array & ica)
   }
 
   // Now that we are done with "if", jump to the end; also start the else here.
-  ica.Add("jump", end_label);
+  ica.Add(Instr::JUMP, end_label);
   ica.AddLabel(else_label);
 
   if (children[2]) {
@@ -532,7 +555,7 @@ tableEntry * ASTNode_While::CompileTubeIC(symbolTable & table, IC_Array & ica)
   tableEntry * in_var0 = children[0]->CompileTubeIC(table, ica);
 
   // If the condition is false, jump to end.  Otherwise continue through body.
-  ica.Add("jump_if_0", in_var0->GetVarID(), end_label);
+  ica.Add(Instr::JUMP_IF_0, in_var0->GetVarID(), end_label);
 
   if (children[1]) {
     tableEntry * in_var1 = children[1]->CompileTubeIC(table, ica);
@@ -540,36 +563,12 @@ tableEntry * ASTNode_While::CompileTubeIC(symbolTable & table, IC_Array & ica)
   }
 
   // Now that we are done with the while body, jump back to the start.
-  ica.Add("jump", start_label);
+  ica.Add(Instr::JUMP, start_label);
   ica.AddLabel(end_label);
 
   table.PopWhileEndLabel();
 
   return NULL;
-}
-
-/////////////////////
-// ASTNode_Random
-
-ASTNode_Random::ASTNode_Random(ASTNode *in)
-  : ASTNode_BaseChildren(Type::INT)
-{
-  if (in->GetType() != Type::INT) {
-    yyerror ("random argument must be of type int");
-    exit(1);
-  }
-
-  children.push_back(in);
-}
-
-tableEntry * ASTNode_Random::CompileTubeIC(symbolTable & table, IC_Array & ica)
-{
-  tableEntry * in_var = children[0]->CompileTubeIC(table, ica);
-  tableEntry * out_var = table.AddTempEntry(type);
-
-  ica.Add("random", in_var->GetVarID(), out_var->GetVarID());
-
-  return out_var;
 }
 
 /////////////////////
@@ -585,11 +584,10 @@ tableEntry * ASTNode_Break::CompileTubeIC(symbolTable & table, IC_Array & ica)
 {
   if (table.GetWhileDepth() == 0) {
     yyerror2("'break' command used outside of any loop", line_num);
-    //yyerror("'break' command used outside of any loop");
     exit(1);
   }
 
-  ica.Add("jump", table.GetWhileEndLabel());
+  ica.Add(Instr::JUMP, table.GetWhileEndLabel());
 
   return NULL;
 }
@@ -613,10 +611,10 @@ tableEntry * ASTNode_Print::CompileTubeIC(symbolTable & table, IC_Array & ica)
     tableEntry * cur_var = children[i]->CompileTubeIC(table, ica);
     switch (cur_var->GetType()) {
     case Type::INT:
-      ica.Add("out_int", cur_var->GetVarID());
+      ica.Add(Instr::OUT_INT, cur_var->GetVarID());
       break;
     case Type::CHAR:
-      ica.Add("out_char", cur_var->GetVarID());
+      ica.Add(Instr::OUT_CHAR, cur_var->GetVarID());
       break;
     case Type::STRING:
     case Type::INT_ARRAY:
@@ -627,24 +625,24 @@ tableEntry * ASTNode_Print::CompileTubeIC(symbolTable & table, IC_Array & ica)
         string start_label = table.NextLabelID("print_array_start_");
         string end_label = table.NextLabelID("print_array_end_");
         
-        ica.Add("val_copy", "0", index_id, -1, "Init loop variable for printing array.");
-        ica.AddArray("ar_get_siz", cur_var->GetVarID(), size_id, -1, "Save size of array into variable.");
+        ica.Add(Instr::VAL_COPY, "0", index_id, -1, "Init loop variable for printing array.");
+        ica.AddArray(Instr::AR_GET_SIZ, cur_var->GetVarID(), size_id, -1, "Save size of array into variable.");
         ica.AddLabel(start_label);
 
-        ica.Add("test_gte", index_id, size_id, entry_id, "Test if we are finished yet...");
-        ica.Add("jump_if_n0", entry_id, end_label, -1, " ...and jump to end if so.");
+        ica.Add(Instr::TEST_GTE, index_id, size_id, entry_id, "Test if we are finished yet...");
+        ica.Add(Instr::JUMP_IF_N0, entry_id, end_label, -1, " ...and jump to end if so.");
 
-        ica.AddArray("ar_get_idx", cur_var->GetVarID(), index_id, entry_id,
+        ica.AddArray(Instr::AR_GET_IDX, cur_var->GetVarID(), index_id, entry_id,
                      "Collect the value at the next index.");
 
-        if (cur_var->GetType() == Type::STRING) ica.Add("out_char", entry_id, -1, -1,
+        if (cur_var->GetType() == Type::STRING) ica.Add(Instr::OUT_CHAR, entry_id, -1, -1,
                                                         "Print this entry!");
-        else if (cur_var->GetType() == Type::INT_ARRAY) ica.Add("out_int", entry_id, -1, -1,
+        else if (cur_var->GetType() == Type::INT_ARRAY) ica.Add(Instr::OUT_INT, entry_id, -1, -1,
                                                                 "Print this entry!");
 
-        ica.Add("add", index_id, "1", index_id, "Increment to the next index.");
+        ica.Add(Instr::ADD, index_id, "1", index_id, "Increment to the next index.");
         
-        ica.Add("jump", start_label);
+        ica.Add(Instr::JUMP, start_label);
         ica.AddLabel(end_label);
 
         table.FreeTempVarID(size_id);
@@ -659,7 +657,7 @@ tableEntry * ASTNode_Print::CompileTubeIC(symbolTable & table, IC_Array & ica)
 
     if (cur_var->GetTemp() == true) table.RemoveEntry( cur_var );
   }
-  ica.Add("out_char", "'\\n'", -1, -1, "End print statements with a newline.");
+  ica.Add(Instr::OUT_CHAR, "'\\n'", -1, -1, "End print statements with a newline.");
   
   return NULL;
 }

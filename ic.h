@@ -1,10 +1,14 @@
 #ifndef IC_H
 #define IC_H
 
+#include "instr_info.h"
+#include "symbol_table.h"
+
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -32,6 +36,7 @@ public:
 
   virtual bool IsScalar() { return false; }
   virtual bool IsConst() { return false; }
+  virtual bool IsArray() { return false; }
 };
 
 class IC_Arg_VarScalar : public IC_Arg_Base {
@@ -77,18 +82,20 @@ public:
     return out_str.str();
   }
   int GetID() { return var_id; }
+  
+  bool IsArray() { return true; }
 };
 
 
 
 class IC_Entry {
 private:
-  string inst;
+  int instr_type;
   string label;
   string comment;
   vector<IC_Arg_Base*> args;
 public:
-  IC_Entry(string in_inst="", string in_label="") : inst(in_inst), label(in_label) { ; }
+  IC_Entry(int in_instr=Instr::__NO_INSTRUCTION__, string in_label="") : instr_type(in_instr), label(in_label) { ; }
   ~IC_Entry() { ; }
 
   void AddArray(int id)    { args.push_back(new IC_Arg_VarArray(id)); }
@@ -98,7 +105,30 @@ public:
   void SetLabel(string in_lab) { label = in_lab; }
   void SetComment(string cmt) { comment = cmt; }
 
-  void PrintIC(ostream & ofs);
+  void PrintTC(symbolTable & table, ofstream & ofs);
+  
+  void PrintTC_Val_Copy(ofstream & ofs);  
+  void PrintTC_Out_Int(ofstream & ofs);
+  void PrintTC_Out_Char(ofstream & ofs);
+  void PrintTC_Ar_Set_Siz(symbolTable & table, ofstream & ofs);
+	void PrintTC_Ar_Set_Idx(ofstream & ofs);
+	void PrintTC_Ar_Get_Idx(ofstream & ofs);
+  void PrintTC_Ar_Get_Siz(ofstream & ofs);
+  void PrintTC_Test_Equ(ofstream & ofs);
+  void PrintTC_Test_Nequ(ofstream & ofs);
+  void PrintTC_Test_Gtr(ofstream & ofs);
+  void PrintTC_Test_Gte(ofstream & ofs);
+  void PrintTC_Test_Less(ofstream & ofs);
+  void PrintTC_Test_Lte(ofstream & ofs);
+  void PrintTC_Jump(ofstream & ofs);
+  void PrintTC_Jump_If_N0(ofstream & ofs);
+  void PrintTC_Jump_If_0(ofstream & ofs);
+  void PrintTC_Add(ofstream & ofs);
+  void PrintTC_Mult(ofstream & ofs);
+  void PrintTC_Sub(ofstream & ofs);
+  void PrintTC_Div(ofstream & ofs);
+  void PrintTC_Mod(ofstream & ofs);
+  void PrintTC_Random(ofstream & ofs);
 };
 
 
@@ -115,23 +145,23 @@ public:
   // All forms of Add() method.
   // Arguments can either be variables (where an int represents the variable ID) or
   // constant values (where a string holds the constant's lexeme).
-  IC_Entry& Add(string inst, int arg1=-1, int arg2=-1, int arg3=-1, string cmt="");
-  IC_Entry& Add(string inst, string arg1, int arg2=-1, int arg3=-1, string cmt="");
-  IC_Entry& Add(string inst, int arg1,    string arg2, int arg3=-1, string cmt="");
-  IC_Entry& Add(string inst, string arg1, string arg2, int arg3=-1, string cmt="");
-  IC_Entry& Add(string inst, int arg1,    int arg2,    string arg3, string cmt="");
-  IC_Entry& Add(string inst, string arg1, int arg2,    string arg3, string cmt="");
-  IC_Entry& Add(string inst, int arg1,    string arg2, string arg3, string cmt="");
-  IC_Entry& Add(string inst, string arg1, string arg2, string arg3, string cmt="");
+  IC_Entry& Add(int inst, int arg1=-1, int arg2=-1, int arg3=-1, string cmt="");
+  IC_Entry& Add(int inst, string arg1, int arg2=-1, int arg3=-1, string cmt="");
+  IC_Entry& Add(int inst, int arg1,    string arg2, int arg3=-1, string cmt="");
+  IC_Entry& Add(int inst, string arg1, string arg2, int arg3=-1, string cmt="");
+  IC_Entry& Add(int inst, int arg1,    int arg2,    string arg3, string cmt="");
+  IC_Entry& Add(int inst, string arg1, int arg2,    string arg3, string cmt="");
+  IC_Entry& Add(int inst, int arg1,    string arg2, string arg3, string cmt="");
+  IC_Entry& Add(int inst, string arg1, string arg2, string arg3, string cmt="");
 
   // And an AddArray method to handle the four array-based instructions.
   // (first arg is always array id; second arg is always mandatory)
-  IC_Entry& AddArray(string inst, int arg1, int arg2,    int arg3=-1, string cmt="");
-  IC_Entry& AddArray(string inst, int arg1, string arg2, int arg3=-1, string cmt="");
-  IC_Entry& AddArray(string inst, int arg1, int arg2,    string arg3, string cmt="");
-  IC_Entry& AddArray(string inst, int arg1, string arg2, string arg3, string cmt="");
+  IC_Entry& AddArray(int inst, int arg1, int arg2,    int arg3=-1, string cmt="");
+  IC_Entry& AddArray(int inst, int arg1, string arg2, int arg3=-1, string cmt="");
+  IC_Entry& AddArray(int inst, int arg1, int arg2,    string arg3, string cmt="");
+  IC_Entry& AddArray(int inst, int arg1, string arg2, string arg3, string cmt="");
 
-  void PrintIC(ostream & ofs);
+  void PrintTC(symbolTable & table, ofstream & ofs);
 };
 
 #endif
