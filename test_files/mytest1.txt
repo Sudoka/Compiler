@@ -3,7 +3,7 @@ array(int) my_second_array;
 array(int) my_third_array;
 
 my_array.resize(10);
-my_array.resize(20);
+my_array.resize(21);
 
 my_second_array.resize(23);
 my_second_array.resize(25);

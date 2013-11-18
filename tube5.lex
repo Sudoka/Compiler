@@ -17,7 +17,7 @@ string out_filename = "";
 
 %option nounput
 
-type		    int|char|string
+type		        int|char|string
 meta_type       array
 id	            _*[a-zA-Z][a-zA-Z0-9_]*
 int_lit         [0-9]+
@@ -25,11 +25,11 @@ char_lit        '(.|(\\[\\'nt]))'
 string_lit      \"(\\[nt"\\]|[^\\"])*\"
 string_err      \"(\\.|[^\\"])*\"
 string_err2     \"(\\.|[^\\"])*
-comment		    #[^\n]*
+comment		      #[^\n]*
 end_statement   ;
-eol		        \n
+eol		          \n
 whitespace	    [ \t]
-operator	    [+\-*/%=(),!{}[\].]
+operator	      [+\-*/%=(),!{}[\].]
 
 %%
 
@@ -45,7 +45,7 @@ operator	    [+\-*/%=(),!{}[\].]
 {id}          { yylval.lexeme = strdup(yytext);  return ID; }
 {int_lit}     { yylval.lexeme = strdup(yytext);  return INT_LIT; }
 {char_lit}    { yylval.lexeme = strdup(yytext);  return CHAR_LIT; }
-{string_lit}  { yylval.lexeme = strdup(yytext);   return STRING_LIT; }
+{string_lit}  { yylval.lexeme = strdup(yytext);  return STRING_LIT; }
 
 {string_err} {
            cout << "ERROR(line " << line_num << "): Unknown escape char in string." << endl;

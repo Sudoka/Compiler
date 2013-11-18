@@ -28,8 +28,8 @@ ar_resize_start_1:
   mem_copy regA regD                    # Copy the current index.
   jump ar_resize_start_1
 ar_resize_end_2:
-### Converting: val_copy 20 s8 
-  val_copy 20 regB
+### Converting: val_copy 21 s8 
+  val_copy 21 regB
   store regB 8
 ### Converting: ar_set_siz a1 s8 
   load 1 regA

@@ -20,7 +20,7 @@ namespace Instr {
   TEST_LTE,
   JUMP,
   JUMP_IF_0,
-	JUMP_IF_N0, 
+  JUMP_IF_N0, 
   ADD,
   MULT,
   SUB,
