@@ -1,0 +1,97 @@
+  store 18 0
+### Converting: val_copy 0 s4 
+  val_copy 0 regB
+  store regB 4
+### Converting: val_copy s4 s1 
+  load 4 regA
+  val_copy regA regB
+  store regB 1
+while_start_0: 
+### Converting: val_copy 10 s5 
+  val_copy 10 regB
+  store regB 5
+### Converting: test_less s1 s5 s6 
+  load 1 regA
+  load 5 regB
+  test_less regA regB regC
+  store regC 6
+### Converting: jump_if_0 s6 while_end_1 
+  load 6 regA
+  jump_if_0 regA while_end_1
+### Converting: val_copy 0 s7 
+  val_copy 0 regB
+  store regB 7
+### Converting: val_copy s7 s2 
+  load 7 regA
+  val_copy regA regB
+  store regB 2
+### Converting: val_copy 10 s8 
+  val_copy 10 regB
+  store regB 8
+### Converting: val_copy s8 s3 
+  load 8 regA
+  val_copy regA regB
+  store regB 3
+while_start_2: 
+### Converting: val_copy 0 s9 
+  val_copy 0 regB
+  store regB 9
+### Converting: test_gtr s3 s9 s10 
+  load 3 regA
+  load 9 regB
+  test_gtr regA regB regC
+  store regC 10
+### Converting: jump_if_0 s10 while_end_3 
+  load 10 regA
+  jump_if_0 regA while_end_3
+### Converting: val_copy 1000 s11 
+  val_copy 1000 regB
+  store regB 11
+### Converting: random s11 s12 
+  load 11 regA
+  random regA regB
+  store regB 12
+### Converting: add s2 s12 s13 
+  load 2 regA
+  load 12 regB
+  add regA regB regC
+  store regC 13
+### Converting: val_copy s13 s2 
+  load 13 regA
+  val_copy regA regB
+  store regB 2
+### Converting: val_copy 1 s14 
+  val_copy 1 regB
+  store regB 14
+### Converting: sub s3 s14 s15 
+  load 3 regA
+  load 14 regB
+  sub regA regB regC
+  store regC 15
+### Converting: val_copy s15 s3 
+  load 15 regA
+  val_copy regA regB
+  store regB 3
+### Converting: jump while_start_2 
+  jump while_start_2
+while_end_3: 
+### Converting: out_int s2 
+  load 2 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: val_copy 1 s16 
+  val_copy 1 regB
+  store regB 16
+### Converting: add s1 s16 s17 
+  load 1 regA
+  load 16 regB
+  add regA regB regC
+  store regC 17
+### Converting: val_copy s17 s1 
+  load 17 regA
+  val_copy regA regB
+  store regB 1
+### Converting: jump while_start_0 
+  jump while_start_0
+while_end_1: 

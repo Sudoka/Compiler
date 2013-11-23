@@ -1,0 +1,105 @@
+  store 18 0
+### Converting: val_copy '\'' s1 
+  val_copy '\'' regB
+  store regB 1
+### Converting: out_char s1 
+  load 1 regA
+  out_char regA
+### Converting: val_copy '\\' s2 
+  val_copy '\\' regB
+  store regB 2
+### Converting: out_char s2 
+  load 2 regA
+  out_char regA
+### Converting: val_copy 't' s3 
+  val_copy 't' regB
+  store regB 3
+### Converting: out_char s3 
+  load 3 regA
+  out_char regA
+### Converting: val_copy '\'' s4 
+  val_copy '\'' regB
+  store regB 4
+### Converting: out_char s4 
+  load 4 regA
+  out_char regA
+### Converting: val_copy '=' s5 
+  val_copy '=' regB
+  store regB 5
+### Converting: out_char s5 
+  load 5 regA
+  out_char regA
+### Converting: val_copy 't' s6 
+  val_copy 't' regB
+  store regB 6
+### Converting: out_char s6 
+  load 6 regA
+  out_char regA
+### Converting: val_copy 'a' s7 
+  val_copy 'a' regB
+  store regB 7
+### Converting: out_char s7 
+  load 7 regA
+  out_char regA
+### Converting: val_copy 'b' s8 
+  val_copy 'b' regB
+  store regB 8
+### Converting: out_char s8 
+  load 8 regA
+  out_char regA
+### Converting: val_copy '\n' s9 
+  val_copy '\n' regB
+  store regB 9
+### Converting: out_char s9 
+  load 9 regA
+  out_char regA
+### Converting: val_copy '\t' s10 
+  val_copy '\t' regB
+  store regB 10
+### Converting: out_char s10 
+  load 10 regA
+  out_char regA
+### Converting: val_copy 't' s11 
+  val_copy 't' regB
+  store regB 11
+### Converting: out_char s11 
+  load 11 regA
+  out_char regA
+### Converting: val_copy 'a' s12 
+  val_copy 'a' regB
+  store regB 12
+### Converting: out_char s12 
+  load 12 regA
+  out_char regA
+### Converting: val_copy 'b' s13 
+  val_copy 'b' regB
+  store regB 13
+### Converting: out_char s13 
+  load 13 regA
+  out_char regA
+### Converting: val_copy 'b' s14 
+  val_copy 'b' regB
+  store regB 14
+### Converting: out_char s14 
+  load 14 regA
+  out_char regA
+### Converting: val_copy 'e' s15 
+  val_copy 'e' regB
+  store regB 15
+### Converting: out_char s15 
+  load 15 regA
+  out_char regA
+### Converting: val_copy 'd' s16 
+  val_copy 'd' regB
+  store regB 16
+### Converting: out_char s16 
+  load 16 regA
+  out_char regA
+### Converting: val_copy '!' s17 
+  val_copy '!' regB
+  store regB 17
+### Converting: out_char s17 
+  load 17 regA
+  out_char regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'

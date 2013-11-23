@@ -1,0 +1,52 @@
+  store 9 0
+### Converting: val_copy 5 s2 
+  val_copy 5 regB
+  store regB 2
+### Converting: val_copy s2 s1 
+  load 2 regA
+  val_copy regA regB
+  store regB 1
+### Converting: val_copy 5 s3 
+  val_copy 5 regB
+  store regB 3
+### Converting: test_equ s1 s3 s4 
+  load 1 regA
+  load 3 regB
+  test_equ regA regB regC
+  store regC 4
+### Converting: jump_if_0 s4 if_else_0 
+  load 4 regA
+  jump_if_0 regA if_else_0
+### Converting: val_copy 2 s5 
+  val_copy 2 regB
+  store regB 5
+### Converting: mult s1 s5 s6 
+  load 1 regA
+  load 5 regB
+  mult regA regB regC
+  store regC 6
+### Converting: val_copy s6 s1 
+  load 6 regA
+  val_copy regA regB
+  store regB 1
+### Converting: val_copy 4 s7 
+  val_copy 4 regB
+  store regB 7
+### Converting: add s1 s7 s8 
+  load 1 regA
+  load 7 regB
+  add regA regB regC
+  store regC 8
+### Converting: val_copy s8 s1 
+  load 8 regA
+  val_copy regA regB
+  store regB 1
+### Converting: jump if_end_1 
+  jump if_end_1
+if_else_0: 
+if_end_1: 
+### Converting: out_int s1 
+  load 1 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'

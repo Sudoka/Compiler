@@ -1,0 +1,630 @@
+  store 11 0
+### Converting: ar_set_siz a2 68 
+  load 2 regA
+  val_copy 68 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_0
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_0
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_2
+ar_resize_do_copy_0:
+  load 0 regD                           # Set regD = free mem position
+  store regD 2
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_1:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_2
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_1
+ar_resize_end_2:
+### Converting: ar_set_idx a2 0 'T' 
+  load 2 regA
+  val_copy 0 regB
+  val_copy 'T' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 1 'h' 
+  load 2 regA
+  val_copy 1 regB
+  val_copy 'h' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 2 'i' 
+  load 2 regA
+  val_copy 2 regB
+  val_copy 'i' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 3 's' 
+  load 2 regA
+  val_copy 3 regB
+  val_copy 's' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 4 ' ' 
+  load 2 regA
+  val_copy 4 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 5 's' 
+  load 2 regA
+  val_copy 5 regB
+  val_copy 's' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 6 't' 
+  load 2 regA
+  val_copy 6 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 7 'r' 
+  load 2 regA
+  val_copy 7 regB
+  val_copy 'r' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 8 'i' 
+  load 2 regA
+  val_copy 8 regB
+  val_copy 'i' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 9 'n' 
+  load 2 regA
+  val_copy 9 regB
+  val_copy 'n' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 10 'g' 
+  load 2 regA
+  val_copy 10 regB
+  val_copy 'g' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 11 ' ' 
+  load 2 regA
+  val_copy 11 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 12 'i' 
+  load 2 regA
+  val_copy 12 regB
+  val_copy 'i' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 13 's' 
+  load 2 regA
+  val_copy 13 regB
+  val_copy 's' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 14 ' ' 
+  load 2 regA
+  val_copy 14 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 15 's' 
+  load 2 regA
+  val_copy 15 regB
+  val_copy 's' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 16 'h' 
+  load 2 regA
+  val_copy 16 regB
+  val_copy 'h' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 17 'o' 
+  load 2 regA
+  val_copy 17 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 18 'r' 
+  load 2 regA
+  val_copy 18 regB
+  val_copy 'r' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 19 't' 
+  load 2 regA
+  val_copy 19 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 20 ' ' 
+  load 2 regA
+  val_copy 20 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 21 'e' 
+  load 2 regA
+  val_copy 21 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 22 'n' 
+  load 2 regA
+  val_copy 22 regB
+  val_copy 'n' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 23 'o' 
+  load 2 regA
+  val_copy 23 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 24 'u' 
+  load 2 regA
+  val_copy 24 regB
+  val_copy 'u' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 25 'g' 
+  load 2 regA
+  val_copy 25 regB
+  val_copy 'g' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 26 'h' 
+  load 2 regA
+  val_copy 26 regB
+  val_copy 'h' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 27 ' ' 
+  load 2 regA
+  val_copy 27 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 28 't' 
+  load 2 regA
+  val_copy 28 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 29 'o' 
+  load 2 regA
+  val_copy 29 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 30 ' ' 
+  load 2 regA
+  val_copy 30 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 31 'e' 
+  load 2 regA
+  val_copy 31 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 32 'x' 
+  load 2 regA
+  val_copy 32 regB
+  val_copy 'x' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 33 'p' 
+  load 2 regA
+  val_copy 33 regB
+  val_copy 'p' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 34 'e' 
+  load 2 regA
+  val_copy 34 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 35 'r' 
+  load 2 regA
+  val_copy 35 regB
+  val_copy 'r' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 36 'i' 
+  load 2 regA
+  val_copy 36 regB
+  val_copy 'i' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 37 'm' 
+  load 2 regA
+  val_copy 37 regB
+  val_copy 'm' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 38 'e' 
+  load 2 regA
+  val_copy 38 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 39 'n' 
+  load 2 regA
+  val_copy 39 regB
+  val_copy 'n' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 40 't' 
+  load 2 regA
+  val_copy 40 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 41 ' ' 
+  load 2 regA
+  val_copy 41 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 42 'o' 
+  load 2 regA
+  val_copy 42 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 43 'n' 
+  load 2 regA
+  val_copy 43 regB
+  val_copy 'n' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 44 ',' 
+  load 2 regA
+  val_copy 44 regB
+  val_copy ',' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 45 ' ' 
+  load 2 regA
+  val_copy 45 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 46 'b' 
+  load 2 regA
+  val_copy 46 regB
+  val_copy 'b' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 47 'u' 
+  load 2 regA
+  val_copy 47 regB
+  val_copy 'u' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 48 't' 
+  load 2 regA
+  val_copy 48 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 49 ' ' 
+  load 2 regA
+  val_copy 49 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 50 's' 
+  load 2 regA
+  val_copy 50 regB
+  val_copy 's' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 51 't' 
+  load 2 regA
+  val_copy 51 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 52 'i' 
+  load 2 regA
+  val_copy 52 regB
+  val_copy 'i' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 53 'l' 
+  load 2 regA
+  val_copy 53 regB
+  val_copy 'l' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 54 'l' 
+  load 2 regA
+  val_copy 54 regB
+  val_copy 'l' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 55 ' ' 
+  load 2 regA
+  val_copy 55 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 56 'p' 
+  load 2 regA
+  val_copy 56 regB
+  val_copy 'p' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 57 'r' 
+  load 2 regA
+  val_copy 57 regB
+  val_copy 'r' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 58 'e' 
+  load 2 regA
+  val_copy 58 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 59 't' 
+  load 2 regA
+  val_copy 59 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 60 't' 
+  load 2 regA
+  val_copy 60 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 61 'y' 
+  load 2 regA
+  val_copy 61 regB
+  val_copy 'y' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 62 ' ' 
+  load 2 regA
+  val_copy 62 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 63 'l' 
+  load 2 regA
+  val_copy 63 regB
+  val_copy 'l' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 64 'o' 
+  load 2 regA
+  val_copy 64 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 65 'n' 
+  load 2 regA
+  val_copy 65 regB
+  val_copy 'n' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 66 'g' 
+  load 2 regA
+  val_copy 66 regB
+  val_copy 'g' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a2 67 '.' 
+  load 2 regA
+  val_copy 67 regB
+  val_copy '.' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 0 s4           # Init loop variable for copying array.
+  val_copy 0 regB
+  store regB 4
+### Converting: ar_get_siz a2 s3        # Save size of RHS array into variable.
+  load 2 regA
+  load regA regB
+  store regB 3
+### Converting: ar_set_siz a1 s3        # Make LHS same size as RHS.
+  load 1 regA
+  load 3 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_3
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_3
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_5
+ar_resize_do_copy_3:
+  load 0 regD                           # Set regD = free mem position
+  store regD 1
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_4:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_5
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_4
+ar_resize_end_5:
+copy_array_start_0: 
+### Converting: test_equ s4 s3 s5       # Test if we are finished yet...
+  load 4 regA
+  load 3 regB
+  test_equ regA regB regC
+  store regC 5
+### Converting: jump_if_n0 s5 copy_array_end_1 #  ...and jump if we are.
+  load 5 regA
+  jump_if_n0 regA copy_array_end_1
+### Converting: ar_get_idx a2 s4 s5     # Collect the value at next index.
+  load 2 regA
+  load 4 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 5
+### Converting: ar_set_idx a1 s4 s5     # Write this entry to the LHS!
+  load 1 regA
+  load 4 regB
+  load 5 regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: add s4 1 s4             # Increment to the next index.
+  load 4 regA
+  add regA 1 regC
+  store regC 4
+### Converting: jump copy_array_start_0 #  ...and jump if not.
+  jump copy_array_start_0
+copy_array_end_1: 
+### Converting: val_copy 20 s7 
+  val_copy 20 regB
+  store regB 7
+### Converting: ar_set_siz a1 s7 
+  load 1 regA
+  load 7 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_6
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_6
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_8
+ar_resize_do_copy_6:
+  load 0 regD                           # Set regD = free mem position
+  store regD 1
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_7:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_8
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_7
+ar_resize_end_8:
+### Converting: val_copy 0 s9           # Init loop variable for printing array.
+  val_copy 0 regB
+  store regB 9
+### Converting: ar_get_siz a1 s8        # Save size of array into variable.
+  load 1 regA
+  load regA regB
+  store regB 8
+print_array_start_2: 
+### Converting: test_gte s9 s8 s10      # Test if we are finished yet...
+  load 9 regA
+  load 8 regB
+  test_gte regA regB regC
+  store regC 10
+### Converting: jump_if_n0 s10 print_array_end_3 #  ...and jump to end if so.
+  load 10 regA
+  jump_if_n0 regA print_array_end_3
+### Converting: ar_get_idx a1 s9 s10    # Collect the value at the next index.
+  load 1 regA
+  load 9 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 10
+### Converting: out_char s10            # Print this entry!
+  load 10 regA
+  out_char regA
+### Converting: add s9 1 s9             # Increment to the next index.
+  load 9 regA
+  add regA 1 regC
+  store regC 9
+### Converting: jump print_array_start_2 
+  jump print_array_start_2
+print_array_end_3: 
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'

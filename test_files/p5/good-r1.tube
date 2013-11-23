@@ -1,0 +1,9 @@
+# Test the random number generator.
+array(int) random_digits;
+random_digits.resize(60);
+int index = 0;
+while (index < random_digits.size()) {
+  random_digits[index] = random(10);
+  index = index + 1;
+}
+print random_digits;

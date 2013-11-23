@@ -1,0 +1,380 @@
+  store 80 0
+### Converting: val_copy 1 s2 
+  val_copy 1 regB
+  store regB 2
+### Converting: val_copy s2 s1 
+  load 2 regA
+  val_copy regA regB
+  store regB 1
+### Converting: val_copy 7 s3 
+  val_copy 7 regB
+  store regB 3
+### Converting: mod s1 s3 s4 
+  load 1 regA
+  load 3 regB
+  mod regA regB regC
+  store regC 4
+### Converting: val_copy 2 s5 
+  val_copy 2 regB
+  store regB 5
+### Converting: add s4 s5 s6 
+  load 4 regA
+  load 5 regB
+  add regA regB regC
+  store regC 6
+### Converting: val_copy 3 s7 
+  val_copy 3 regB
+  store regB 7
+### Converting: test_equ s6 s7 s8 
+  load 6 regA
+  load 7 regB
+  test_equ regA regB regC
+  store regC 8
+### Converting: test_nequ s8 0 s9 
+### Converting: jump_if_0 s9 end_bool_0 # AND!
+  load 9 regA
+  jump_if_0 regA end_bool_0
+### Converting: val_copy 10 s10 
+  val_copy 10 regB
+  store regB 10
+### Converting: mult s1 s10 s11 
+  load 1 regA
+  load 10 regB
+  mult regA regB regC
+  store regC 11
+### Converting: val_copy 7 s12 
+  val_copy 7 regB
+  store regB 12
+### Converting: div s11 s12 s13 
+  load 11 regA
+  load 12 regB
+  div regA regB regC
+  store regC 13
+### Converting: val_copy 1 s14 
+  val_copy 1 regB
+  store regB 14
+### Converting: test_equ s13 s14 s15 
+  load 13 regA
+  load 14 regB
+  test_equ regA regB regC
+  store regC 15
+### Converting: test_nequ s15 0 s9 
+end_bool_0: 
+### Converting: test_nequ s9 0 s16 
+### Converting: jump_if_n0 s16 end_bool_1 # OR!
+  load 16 regA
+  jump_if_n0 regA end_bool_1
+### Converting: val_copy 0 s17 
+  val_copy 0 regB
+  store regB 17
+### Converting: val_copy s17 s1 
+  load 17 regA
+  val_copy regA regB
+  store regB 1
+### Converting: test_nequ s1 0 s16 
+end_bool_1: 
+### Converting: out_int s16 
+  load 16 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: val_copy 7 s18 
+  val_copy 7 regB
+  store regB 18
+### Converting: mod s1 s18 s19 
+  load 1 regA
+  load 18 regB
+  mod regA regB regC
+  store regC 19
+### Converting: val_copy 2 s20 
+  val_copy 2 regB
+  store regB 20
+### Converting: add s19 s20 s21 
+  load 19 regA
+  load 20 regB
+  add regA regB regC
+  store regC 21
+### Converting: val_copy 3 s22 
+  val_copy 3 regB
+  store regB 22
+### Converting: test_equ s21 s22 s23 
+  load 21 regA
+  load 22 regB
+  test_equ regA regB regC
+  store regC 23
+### Converting: test_nequ s23 0 s24 
+### Converting: jump_if_0 s24 end_bool_2 # AND!
+  load 24 regA
+  jump_if_0 regA end_bool_2
+### Converting: val_copy 10 s25 
+  val_copy 10 regB
+  store regB 25
+### Converting: mult s1 s25 s26 
+  load 1 regA
+  load 25 regB
+  mult regA regB regC
+  store regC 26
+### Converting: val_copy 7 s27 
+  val_copy 7 regB
+  store regB 27
+### Converting: div s26 s27 s28 
+  load 26 regA
+  load 27 regB
+  div regA regB regC
+  store regC 28
+### Converting: val_copy 1 s29 
+  val_copy 1 regB
+  store regB 29
+### Converting: test_equ s28 s29 s30 
+  load 28 regA
+  load 29 regB
+  test_equ regA regB regC
+  store regC 30
+### Converting: test_nequ s30 0 s24 
+end_bool_2: 
+### Converting: test_nequ s24 0 s31 
+### Converting: jump_if_n0 s31 end_bool_3 # OR!
+  load 31 regA
+  jump_if_n0 regA end_bool_3
+### Converting: val_copy 0 s32 
+  val_copy 0 regB
+  store regB 32
+### Converting: val_copy s32 s1 
+  load 32 regA
+  val_copy regA regB
+  store regB 1
+### Converting: test_nequ s1 0 s31 
+end_bool_3: 
+### Converting: out_int s31 
+  load 31 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: val_copy 7 s33 
+  val_copy 7 regB
+  store regB 33
+### Converting: mod s1 s33 s34 
+  load 1 regA
+  load 33 regB
+  mod regA regB regC
+  store regC 34
+### Converting: val_copy 2 s35 
+  val_copy 2 regB
+  store regB 35
+### Converting: add s34 s35 s36 
+  load 34 regA
+  load 35 regB
+  add regA regB regC
+  store regC 36
+### Converting: val_copy 3 s37 
+  val_copy 3 regB
+  store regB 37
+### Converting: test_equ s36 s37 s38 
+  load 36 regA
+  load 37 regB
+  test_equ regA regB regC
+  store regC 38
+### Converting: test_nequ s38 0 s39 
+### Converting: jump_if_0 s39 end_bool_4 # AND!
+  load 39 regA
+  jump_if_0 regA end_bool_4
+### Converting: val_copy 10 s40 
+  val_copy 10 regB
+  store regB 40
+### Converting: mult s1 s40 s41 
+  load 1 regA
+  load 40 regB
+  mult regA regB regC
+  store regC 41
+### Converting: val_copy 7 s42 
+  val_copy 7 regB
+  store regB 42
+### Converting: div s41 s42 s43 
+  load 41 regA
+  load 42 regB
+  div regA regB regC
+  store regC 43
+### Converting: val_copy 1 s44 
+  val_copy 1 regB
+  store regB 44
+### Converting: test_equ s43 s44 s45 
+  load 43 regA
+  load 44 regB
+  test_equ regA regB regC
+  store regC 45
+### Converting: test_nequ s45 0 s39 
+end_bool_4: 
+### Converting: test_nequ s39 0 s46 
+### Converting: jump_if_0 s46 end_bool_5 # AND!
+  load 46 regA
+  jump_if_0 regA end_bool_5
+### Converting: val_copy 0 s47 
+  val_copy 0 regB
+  store regB 47
+### Converting: val_copy s47 s1 
+  load 47 regA
+  val_copy regA regB
+  store regB 1
+### Converting: test_nequ s1 0 s46 
+end_bool_5: 
+### Converting: out_int s46 
+  load 46 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: val_copy 7 s48 
+  val_copy 7 regB
+  store regB 48
+### Converting: mod s1 s48 s49 
+  load 1 regA
+  load 48 regB
+  mod regA regB regC
+  store regC 49
+### Converting: val_copy 2 s50 
+  val_copy 2 regB
+  store regB 50
+### Converting: add s49 s50 s51 
+  load 49 regA
+  load 50 regB
+  add regA regB regC
+  store regC 51
+### Converting: val_copy 3 s52 
+  val_copy 3 regB
+  store regB 52
+### Converting: test_equ s51 s52 s53 
+  load 51 regA
+  load 52 regB
+  test_equ regA regB regC
+  store regC 53
+### Converting: test_nequ s53 0 s54 
+### Converting: jump_if_0 s54 end_bool_6 # AND!
+  load 54 regA
+  jump_if_0 regA end_bool_6
+### Converting: val_copy 10 s55 
+  val_copy 10 regB
+  store regB 55
+### Converting: mult s1 s55 s56 
+  load 1 regA
+  load 55 regB
+  mult regA regB regC
+  store regC 56
+### Converting: val_copy 7 s57 
+  val_copy 7 regB
+  store regB 57
+### Converting: div s56 s57 s58 
+  load 56 regA
+  load 57 regB
+  div regA regB regC
+  store regC 58
+### Converting: val_copy 1 s59 
+  val_copy 1 regB
+  store regB 59
+### Converting: test_equ s58 s59 s60 
+  load 58 regA
+  load 59 regB
+  test_equ regA regB regC
+  store regC 60
+### Converting: test_nequ s60 0 s54 
+end_bool_6: 
+### Converting: test_nequ s54 0 s61 
+### Converting: jump_if_n0 s61 end_bool_7 # OR!
+  load 61 regA
+  jump_if_n0 regA end_bool_7
+### Converting: val_copy 0 s62 
+  val_copy 0 regB
+  store regB 62
+### Converting: val_copy s62 s1 
+  load 62 regA
+  val_copy regA regB
+  store regB 1
+### Converting: test_nequ s1 0 s61 
+end_bool_7: 
+### Converting: out_int s61 
+  load 61 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: val_copy 1 s63 
+  val_copy 1 regB
+  store regB 63
+### Converting: add s1 s63 s64 
+  load 1 regA
+  load 63 regB
+  add regA regB regC
+  store regC 64
+### Converting: val_copy s64 s1 
+  load 64 regA
+  val_copy regA regB
+  store regB 1
+### Converting: val_copy 7 s65 
+  val_copy 7 regB
+  store regB 65
+### Converting: mod s1 s65 s66 
+  load 1 regA
+  load 65 regB
+  mod regA regB regC
+  store regC 66
+### Converting: val_copy 2 s67 
+  val_copy 2 regB
+  store regB 67
+### Converting: add s66 s67 s68 
+  load 66 regA
+  load 67 regB
+  add regA regB regC
+  store regC 68
+### Converting: val_copy 3 s69 
+  val_copy 3 regB
+  store regB 69
+### Converting: test_equ s68 s69 s70 
+  load 68 regA
+  load 69 regB
+  test_equ regA regB regC
+  store regC 70
+### Converting: test_nequ s70 0 s71 
+### Converting: jump_if_0 s71 end_bool_8 # AND!
+  load 71 regA
+  jump_if_0 regA end_bool_8
+### Converting: val_copy 10 s72 
+  val_copy 10 regB
+  store regB 72
+### Converting: mult s1 s72 s73 
+  load 1 regA
+  load 72 regB
+  mult regA regB regC
+  store regC 73
+### Converting: val_copy 7 s74 
+  val_copy 7 regB
+  store regB 74
+### Converting: div s73 s74 s75 
+  load 73 regA
+  load 74 regB
+  div regA regB regC
+  store regC 75
+### Converting: val_copy 1 s76 
+  val_copy 1 regB
+  store regB 76
+### Converting: test_equ s75 s76 s77 
+  load 75 regA
+  load 76 regB
+  test_equ regA regB regC
+  store regC 77
+### Converting: test_nequ s77 0 s71 
+end_bool_8: 
+### Converting: test_nequ s71 0 s78 
+### Converting: jump_if_n0 s78 end_bool_9 # OR!
+  load 78 regA
+  jump_if_n0 regA end_bool_9
+### Converting: val_copy 0 s79 
+  val_copy 0 regB
+  store regB 79
+### Converting: val_copy s79 s1 
+  load 79 regA
+  val_copy regA regB
+  store regB 1
+### Converting: test_nequ s1 0 s78 
+end_bool_9: 
+### Converting: out_int s78 
+  load 78 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
