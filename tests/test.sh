@@ -4,7 +4,7 @@ TEST_NUMBER=0
 MY_TUBE_EXEC="./tube5"
 EX_TUBE_EXEC="./correct/tube5"
 
-TUBECODE_EXEC="./tubecode"
+TUBECODE_EXEC="./tests/tubecode"
 
 for file in /Users/mwein/Projects/GitHub/Project6/tests/p6/* #{p5,p6}/*
 do

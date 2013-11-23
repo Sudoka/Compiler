@@ -17,15 +17,15 @@ string out_filename = "";
 
 %option nounput
 
-type		        int|char|string
+type		          int|char|string
 meta_type       array
-id	            _*[a-zA-Z][a-zA-Z0-9_]*
+id	             _*[a-zA-Z][a-zA-Z0-9_]*
 int_lit         [0-9]+
 char_lit        '(.|(\\[\\'nt]))'
 string_lit      \"(\\[nt"\\]|[^\\"])*\"
 string_err      \"(\\.|[^\\"])*\"
 string_err2     \"(\\.|[^\\"])*
-comment		      #[^\n]*
+comment		       #[^\n]*
 end_statement   ;
 eol		          \n
 whitespace	    [ \t]
@@ -39,6 +39,9 @@ operator	      [+\-*/%=(),!{}[\].]
 "while"  { return COMMAND_WHILE; }
 "break"  { return COMMAND_BREAK; }
 "random" { return COMMAND_RANDOM; }
+
+"define" { return FUNCTION_DEFINE; }
+"return" { return FUNCTION_RETURN; }
 
 {type}        { yylval.lexeme = strdup(yytext);  return TYPE; }
 {meta_type}   { yylval.lexeme = strdup(yytext);  return META_TYPE; }

@@ -39,7 +39,13 @@ void yyerror2(string err_string, int orig_line) {
   ASTNode_BaseChildren * ast_node_children;
 }
 
-%token ENDLINE CASSIGN_ADD CASSIGN_SUB CASSIGN_MULT CASSIGN_DIV CASSIGN_MOD COMP_EQU COMP_NEQU COMP_LESS COMP_LTE COMP_GTR COMP_GTE BOOL_AND BOOL_OR COMMAND_PRINT COMMAND_IF COMMAND_ELSE COMMAND_WHILE COMMAND_BREAK COMMAND_RANDOM
+%token ENDLINE 
+%token CASSIGN_ADD CASSIGN_SUB CASSIGN_MULT CASSIGN_DIV CASSIGN_MOD 
+%token COMP_EQU COMP_NEQU COMP_LESS COMP_LTE COMP_GTR COMP_GTE 
+%token BOOL_AND BOOL_OR 
+%token COMMAND_PRINT COMMAND_IF COMMAND_ELSE COMMAND_WHILE COMMAND_BREAK COMMAND_RANDOM
+%token FUNCTION_DEFINE FUNCTION_RETURN
+
 %token <lexeme> INT_LIT CHAR_LIT STRING_LIT TYPE META_TYPE ID
 
 %right '=' CASSIGN_ADD CASSIGN_SUB CASSIGN_MULT CASSIGN_DIV CASSIGN_MOD
@@ -71,20 +77,53 @@ program:      statement_list {
 statement_list:	 {
 	           $$ = new ASTNode_Root;
                  }
-	|        statement_list statement {
+       	|        statement_list statement {
                    if ($2 != NULL) $1->AddChild($2);
                    $$ = $1;
 		 }
 	;
 
 statement:   var_declare ENDLINE    {  $$ = $1;  }
-	|    declare_assign ENDLINE {  $$ = $1;  }
-	|    expression ENDLINE     {  $$ = $1;  }
-	|    command ENDLINE        {  $$ = $1;  }
+        |    function_declare          { ; }
+        |    function_return_statement { ; }
+	       |    declare_assign ENDLINE {  $$ = $1;  }
+       	|    expression ENDLINE     {  $$ = $1;  }
+	       |    command ENDLINE        {  $$ = $1;  }
         |    flow_command           {  $$ = $1;  }
         |    code_block             {  $$ = $1;  }
         |    ENDLINE                {  $$ = NULL;  }
 	;
+
+function_declare: function_declare_with_args | function_declare_no_args;
+
+function_declare_with_args: FUNCTION_DEFINE TYPE ID '(' function_argument_list ')' statement {
+
+}
+;
+
+function_declare_no_args: FUNCTION_DEFINE TYPE ID '(' ')' statement {
+    
+    string return_type_name = $2;
+    int return_type_id = 0;
+
+    if (return_type_name == "int") return_type_id = Type::INT;
+		  else if (return_type_name == "char") return_type_id = Type::CHAR;
+		  else if (return_type_name == "string") return_type_id = Type::STRING;
+		  else {
+		    string err_string = "unknown type '";
+		    err_string += $2;
+                    err_string += "'";
+		    yyerror(err_string);
+		  }
+
+    symbol_table.AddEntry(return_type_id, $3);
+}
+;
+
+function_return_statement: FUNCTION_RETURN expression {
+
+}
+;
 
 var_declare:	TYPE ID {
 	          if (symbol_table.Lookup($2) != 0) {
@@ -281,6 +320,16 @@ expression:  expression '+' expression {
                $$->SetLineNum(line_num);
             }
 	;
+
+function_argument_list: function_argument_list ',' function_argument {
+
+   }
+   | function_argument {
+
+   }
+   ;
+
+function_argument: TYPE ID { ; }
 
 argument_list:	argument_list ',' argument {
 		  ASTNode * node = $1; // Grab the node used for arg list.

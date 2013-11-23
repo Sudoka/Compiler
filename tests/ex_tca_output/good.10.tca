@@ -1,0 +1,8 @@
+  store 3 0
+### Converting: val_copy 1 s2 
+  val_copy 1 regB
+  store regB 2
+### Converting: val_copy s2 s1 
+  load 2 regA
+  val_copy regA regB
+  store regB 1
