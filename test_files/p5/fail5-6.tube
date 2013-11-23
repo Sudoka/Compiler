@@ -1,2 +1,0 @@
-# You may only have one type inside of an array.
-array(int, char) my_array;

@@ -1,3 +1,0 @@
-# Make sure that you can't index into an array using a character.
-string in_string = "This is my string.";
-print in_string['y'];

@@ -188,66 +188,109 @@ void IC_Entry::PrintTC_Ar_Get_Siz(ofstream & ofs)
   
 void IC_Entry::PrintTC_Test_Equ(ofstream & ofs)
 {
-  if (args[0]->IsScalar() && args[1]->IsScalar() && args[2]->IsScalar())
+  if (args[0]->IsScalar() && args[2]->IsScalar())
 	{
 	  ofs << "  load " << args[0]->GetID() << " regA" << endl;
-    ofs << "  load " << args[1]->GetID() << " regB" << endl;
-    ofs << "  test_equ regA regB regC" << endl; 
+   if (args[1]->IsScalar())
+   {
+     ofs << "  load " << args[1]->GetID() << " regB" << endl;
+     ofs << "  test_equ regA regB regC" << endl; 
+   }
+   else if (args[1]->IsConst())
+   {
+     ofs << "  test_equ regA " << args[1]->AsString() << " regC" << endl; 
+   }
     ofs << "  store regC " << args[2]->GetID() << endl;
 	}
 };
   
 void IC_Entry::PrintTC_Test_Nequ(ofstream & ofs)
 {
-  if (args[0]->IsScalar() && args[1]->IsScalar() && args[2]->IsScalar())
+  if (args[0]->IsScalar() && args[2]->IsScalar())
 	{
 	  ofs << "  load " << args[0]->GetID() << " regA" << endl;
-    ofs << "  load " << args[1]->GetID() << " regB" << endl;
-    ofs << "  test_nequ regA regB regC" << endl; 
-    ofs << "  store regC " << args[2]->GetID() << endl;
+   if (args[1]->IsScalar())
+   {
+     ofs << "  load " << args[1]->GetID() << " regB" << endl;
+     ofs << "  test_nequ regA regB regC" << endl; 
+   }
+   else if (args[1]->IsConst())
+   {
+     ofs << "  test_nequ regA " << args[1]->AsString() << " regC" << endl; 
+   }
+   ofs << "  store regC " << args[2]->GetID() << endl;
 	}
+
 };
   
 void IC_Entry::PrintTC_Test_Gtr(ofstream & ofs)
 {
-	if (args[0]->IsScalar() && args[1]->IsScalar() && args[2]->IsScalar())
+	if (args[0]->IsScalar() && args[2]->IsScalar())
 	{
 	  ofs << "  load " << args[0]->GetID() << " regA" << endl;
-    ofs << "  load " << args[1]->GetID() << " regB" << endl;
-    ofs << "  test_gtr regA regB regC" << endl; 
+   if (args[1]->IsScalar())
+   {
+     ofs << "  load " << args[1]->GetID() << " regB" << endl;
+     ofs << "  test_gtr regA regB regC" << endl; 
+   }
+   else if (args[1]->IsConst())
+   {
+     ofs << "  test_gtr regA " << args[1]->AsString() << " regC" << endl; 
+   }
     ofs << "  store regC " << args[2]->GetID() << endl;
 	}
 };
   
 void IC_Entry::PrintTC_Test_Gte(ofstream & ofs)
 {
-  if (args[0]->IsScalar() && args[1]->IsScalar() && args[2]->IsScalar())
+  if (args[0]->IsScalar() && args[2]->IsScalar())
 	{
 	  ofs << "  load " << args[0]->GetID() << " regA" << endl;
-    ofs << "  load " << args[1]->GetID() << " regB" << endl;
-    ofs << "  test_gte regA regB regC" << endl; 
+   if (args[1]->IsScalar())
+   {
+     ofs << "  load " << args[1]->GetID() << " regB" << endl;
+     ofs << "  test_gte regA regB regC" << endl; 
+   }
+   else if (args[1]->IsConst())
+   {
+     ofs << "  test_gte regA " << args[1]->AsString() << " regC" << endl; 
+   }
     ofs << "  store regC " << args[2]->GetID() << endl;
 	}
 };
   
 void IC_Entry::PrintTC_Test_Less(ofstream & ofs)
 {
-	if (args[0]->IsScalar() && args[1]->IsScalar() && args[2]->IsScalar())
+	if (args[0]->IsScalar() && args[2]->IsScalar())
 	{
 		ofs << "  load " << args[0]->GetID() << " regA" << endl;
-		ofs << "  load " << args[1]->GetID() << " regB" << endl;
-		ofs << "  test_less regA regB regC" << endl; 
+		 if (args[1]->IsScalar())
+   {
+     ofs << "  load " << args[1]->GetID() << " regB" << endl;
+     ofs << "  test_less regA regB regC" << endl; 
+   }
+   else if (args[1]->IsConst())
+   {
+     ofs << "  test_less regA " << args[1]->AsString() << " regC" << endl; 
+   }
     ofs << "  store regC " << args[2]->GetID() << endl;
 	}
 };
   
 void IC_Entry::PrintTC_Test_Lte(ofstream & ofs)
 {
-  if (args[0]->IsScalar() && args[1]->IsScalar() && args[2]->IsScalar())
+  if (args[0]->IsScalar() && args[2]->IsScalar())
 	{
 	  ofs << "  load " << args[0]->GetID() << " regA" << endl;
-    ofs << "  load " << args[1]->GetID() << " regB" << endl;
-    ofs << "  test_lte regA regB regC" << endl; 
+   if (args[1]->IsScalar())
+   {
+     ofs << "  load " << args[1]->GetID() << " regB" << endl;
+     ofs << "  test_lte regA regB regC" << endl; 
+   }
+   else if (args[1]->IsConst())
+   {
+     ofs << "  test_lte regA " << args[1]->AsString() << " regC" << endl; 
+   }
     ofs << "  store regC " << args[2]->GetID() << endl;
 	}
 };

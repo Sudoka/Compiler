@@ -1,7 +1,0 @@
-# Incorrect arg count.
-
-define int Fail7(int a, int b) {
-  return a+b;
-}
-
-print Fail7(3,4,5);

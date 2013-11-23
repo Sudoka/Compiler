@@ -1,4 +1,0 @@
-# Make sure that array(int) and string are not interchangable.
-string str;
-array(int) ai;
-str = ai;

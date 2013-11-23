@@ -1,3 +1,0 @@
-# You may not index into a non-array.
-int abc = 11;
-print abc[0];

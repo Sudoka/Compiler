@@ -1,3 +1,0 @@
-# Try using a string with escape characters in it.
-string esc_str = "This string has\n\ttwo lines (and is tabbed with \"quotes\")";
-print esc_str;

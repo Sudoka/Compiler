@@ -1,5 +1,0 @@
-# Using the size() method (and an expression as the index!)
-
-string msg = "This is a test.";
-msg[msg.size() - 1] = '!';
-print msg;

@@ -111,8 +111,8 @@ public:
   void PrintTC_Out_Int(ofstream & ofs);
   void PrintTC_Out_Char(ofstream & ofs);
   void PrintTC_Ar_Set_Siz(symbolTable & table, ofstream & ofs);
-	void PrintTC_Ar_Set_Idx(ofstream & ofs);
-	void PrintTC_Ar_Get_Idx(ofstream & ofs);
+ 	void PrintTC_Ar_Set_Idx(ofstream & ofs);
+	 void PrintTC_Ar_Get_Idx(ofstream & ofs);
   void PrintTC_Ar_Get_Siz(ofstream & ofs);
   void PrintTC_Test_Equ(ofstream & ofs);
   void PrintTC_Test_Nequ(ofstream & ofs);
