@@ -1,0 +1,10 @@
+# This should trigger an out-of-memory error
+# - note the assignments ...
+# -- it is fine to have COPY-ON-WRITE arrays, thus the assignment should force COW 
+array(int) x;
+x.resize(30000);
+array(int) y = x;
+x[2] = 1;
+array(int) z = x;
+z[3] = 1;
+

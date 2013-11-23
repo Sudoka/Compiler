@@ -1,0 +1,7 @@
+# Test the ! operator.
+int a = 15;
+int b = 75;
+
+print !(b/a == 5 || b-a < 70);
+print !((b/a > 5) || ((b-a)/6 == 10));
+print !(a > b || a*2 == b);

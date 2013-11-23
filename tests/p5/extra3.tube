@@ -1,0 +1,3 @@
+# this should trigger an out of memory error
+array(int) x;
+x.resize(65535);
