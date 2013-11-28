@@ -1,8 +1,100 @@
-  store 3 0
-### Converting: val_copy 1 s2 
+# Matthew Wein's Compiler
+  val_copy 12 regH
+  store 10012 0
+### Converting: val_copy 1 s3 
   val_copy 1 regB
-  store regB 2
-### Converting: val_copy s2 s1 
-  load 2 regA
+  store regB 3
+### Converting: val_copy s3 s1 
+  load 3 regA
   val_copy regA regB
   store regB 1
+### Converting: push function_return_0 
+  store function_return_0 regH
+  add regH 1 regH
+### Converting: jump function_NoParameters 
+  jump function_NoParameters
+function_return_0: 
+### Converting: val_copy s2 s4 
+  load 2 regA
+  val_copy regA regB
+  store regB 4
+### Converting: out_int s4 
+  load 4 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: push function_return_1 
+  store function_return_1 regH
+  add regH 1 regH
+### Converting: jump function_NoParameters 
+  jump function_NoParameters
+function_return_1: 
+### Converting: val_copy s2 s5 
+  load 2 regA
+  val_copy regA regB
+  store regB 5
+### Converting: out_int s5 
+  load 5 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: push function_return_2 
+  store function_return_2 regH
+  add regH 1 regH
+### Converting: jump function_NoParameters 
+  jump function_NoParameters
+function_return_2: 
+### Converting: val_copy s2 s6 
+  load 2 regA
+  val_copy regA regB
+  store regB 6
+### Converting: out_int s6 
+  load 6 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: nop 
+  nop 
+### Converting: nop 
+  nop 
+### Converting: nop                     # ============ FUNCTIONS ============
+  nop 
+### Converting: jump define_functions_end # Skip over function defs during normal execution
+  jump define_functions_end
+### Converting: nop 
+  nop 
+### Converting: nop                     # FUNCTION: NoParameters
+  nop 
+function_NoParameters: 
+### Converting: val_copy 5 s8 
+  val_copy 5 regB
+  store regB 8
+### Converting: mult s1 s8 s9 
+  load 1 regA
+  load 8 regB
+  mult regA regB regC
+  store regC 9
+### Converting: val_copy s9 s1 
+  load 9 regA
+  val_copy regA regB
+  store regB 1
+### Converting: val_copy 5 s10 
+  val_copy 5 regB
+  store regB 10
+### Converting: add s1 s10 s11 
+  load 1 regA
+  load 10 regB
+  add regA regB regC
+  store regC 11
+### Converting: val_copy s11 s2 
+  load 11 regA
+  val_copy regA regB
+  store regB 2
+### Converting: pop s7 
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+  store regA 7
+### Converting: jump s7 
+  load 7 regA
+  jump regA
+define_functions_end: 

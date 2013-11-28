@@ -1,1 +1,187 @@
-  store 1 0
+# Matthew Wein's Compiler
+  val_copy 23 regH
+  store 10023 0
+### Converting: val_copy 3 s3 
+  val_copy 3 regB
+  store regB 3
+### Converting: val_copy s3 s2 
+  load 3 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_0 
+  store function_return_0 regH
+  add regH 1 regH
+### Converting: jump function_Fib 
+  jump function_Fib
+function_return_0: 
+### Converting: val_copy s1 s4 
+  load 1 regA
+  val_copy regA regB
+  store regB 4
+### Converting: out_int s4 
+  load 4 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: val_copy 7 s5 
+  val_copy 7 regB
+  store regB 5
+### Converting: val_copy s5 s2 
+  load 5 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_1 
+  store function_return_1 regH
+  add regH 1 regH
+### Converting: jump function_Fib 
+  jump function_Fib
+function_return_1: 
+### Converting: val_copy s1 s6 
+  load 1 regA
+  val_copy regA regB
+  store regB 6
+### Converting: out_int s6 
+  load 6 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: val_copy 21 s7 
+  val_copy 21 regB
+  store regB 7
+### Converting: val_copy s7 s2 
+  load 7 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_2 
+  store function_return_2 regH
+  add regH 1 regH
+### Converting: jump function_Fib 
+  jump function_Fib
+function_return_2: 
+### Converting: val_copy s1 s8 
+  load 1 regA
+  val_copy regA regB
+  store regB 8
+### Converting: out_int s8 
+  load 8 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: nop 
+  nop 
+### Converting: nop 
+  nop 
+### Converting: nop                     # ============ FUNCTIONS ============
+  nop 
+### Converting: jump define_functions_end # Skip over function defs during normal execution
+  jump define_functions_end
+### Converting: nop 
+  nop 
+### Converting: nop                     # FUNCTION: Fib
+  nop 
+function_Fib: 
+### Converting: val_copy 0 s10 
+  val_copy 0 regB
+  store regB 10
+### Converting: test_equ s2 s10 s11 
+  load 2 regA
+  load 10 regB
+  test_equ regA regB regC
+  store regC 11
+### Converting: jump_if_0 s11 if_else_3 
+  load 11 regA
+  jump_if_0 regA if_else_3
+### Converting: val_copy 0 s12 
+  val_copy 0 regB
+  store regB 12
+### Converting: val_copy s12 s1 
+  load 12 regA
+  val_copy regA regB
+  store regB 1
+### Converting: jump if_end_4 
+  jump if_end_4
+if_else_3: 
+if_end_4: 
+### Converting: val_copy 1 s13 
+  val_copy 1 regB
+  store regB 13
+### Converting: test_equ s2 s13 s14 
+  load 2 regA
+  load 13 regB
+  test_equ regA regB regC
+  store regC 14
+### Converting: jump_if_0 s14 if_else_5 
+  load 14 regA
+  jump_if_0 regA if_else_5
+### Converting: val_copy 1 s15 
+  val_copy 1 regB
+  store regB 15
+### Converting: val_copy s15 s1 
+  load 15 regA
+  val_copy regA regB
+  store regB 1
+### Converting: jump if_end_6 
+  jump if_end_6
+if_else_5: 
+if_end_6: 
+### Converting: val_copy 2 s16 
+  val_copy 2 regB
+  store regB 16
+### Converting: sub s2 s16 s17 
+  load 2 regA
+  load 16 regB
+  sub regA regB regC
+  store regC 17
+### Converting: val_copy s17 s2 
+  load 17 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_7 
+  store function_return_7 regH
+  add regH 1 regH
+### Converting: jump function_Fib 
+  jump function_Fib
+function_return_7: 
+### Converting: val_copy s1 s18 
+  load 1 regA
+  val_copy regA regB
+  store regB 18
+### Converting: val_copy 1 s19 
+  val_copy 1 regB
+  store regB 19
+### Converting: sub s2 s19 s20 
+  load 2 regA
+  load 19 regB
+  sub regA regB regC
+  store regC 20
+### Converting: val_copy s20 s2 
+  load 20 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_8 
+  store function_return_8 regH
+  add regH 1 regH
+### Converting: jump function_Fib 
+  jump function_Fib
+function_return_8: 
+### Converting: val_copy s1 s21 
+  load 1 regA
+  val_copy regA regB
+  store regB 21
+### Converting: add s18 s21 s22 
+  load 18 regA
+  load 21 regB
+  add regA regB regC
+  store regC 22
+### Converting: val_copy s22 s1 
+  load 22 regA
+  val_copy regA regB
+  store regB 1
+### Converting: pop s9 
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+  store regA 9
+### Converting: jump s9 
+  load 9 regA
+  jump regA
+define_functions_end: 

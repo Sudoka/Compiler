@@ -129,6 +129,9 @@ public:
   void PrintTC_Div(ofstream & ofs);
   void PrintTC_Mod(ofstream & ofs);
   void PrintTC_Random(ofstream & ofs);
+  void PrintTC_Nop(ofstream & ofs);
+  void PrintTC_Push(ofstream & ofs);
+  void PrintTC_Pop(ofstream & ofs);
 };
 
 

@@ -1,1 +1,86 @@
-  store 1 0
+# Matthew Wein's Compiler
+  val_copy 12 regH
+  store 10012 0
+### Converting: val_copy 25 s5 
+  val_copy 25 regB
+  store regB 5
+### Converting: val_copy s5 s4 
+  load 5 regA
+  val_copy regA regB
+  store regB 4
+### Converting: push function_return_0 
+  store function_return_0 regH
+  add regH 1 regH
+### Converting: jump function_Good5 
+  jump function_Good5
+function_return_0: 
+### Converting: val_copy s3 s6 
+  load 3 regA
+  val_copy regA regB
+  store regB 6
+### Converting: out_int s6 
+  load 6 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: nop 
+  nop 
+### Converting: nop 
+  nop 
+### Converting: nop                     # ============ FUNCTIONS ============
+  nop 
+### Converting: jump define_functions_end # Skip over function defs during normal execution
+  jump define_functions_end
+### Converting: nop 
+  nop 
+### Converting: nop                     # FUNCTION: Good4
+  nop 
+function_Good4: 
+### Converting: val_copy 4 s8 
+  val_copy 4 regB
+  store regB 8
+### Converting: mult s2 s8 s9 
+  load 2 regA
+  load 8 regB
+  mult regA regB regC
+  store regC 9
+### Converting: val_copy s9 s1 
+  load 9 regA
+  val_copy regA regB
+  store regB 1
+### Converting: pop s7 
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+  store regA 7
+### Converting: jump s7 
+  load 7 regA
+  jump regA
+### Converting: nop                     # FUNCTION: Good5
+  nop 
+function_Good5: 
+### Converting: val_copy s4 s2 
+  load 4 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_1 
+  store function_return_1 regH
+  add regH 1 regH
+### Converting: jump function_Good4 
+  jump function_Good4
+function_return_1: 
+### Converting: val_copy s1 s11 
+  load 1 regA
+  val_copy regA regB
+  store regB 11
+### Converting: val_copy s11 s3 
+  load 11 regA
+  val_copy regA regB
+  store regB 3
+### Converting: pop s10 
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+  store regA 10
+### Converting: jump s10 
+  load 10 regA
+  jump regA
+define_functions_end: 

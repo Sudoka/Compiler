@@ -1,0 +1,34 @@
+# Testing functions all on one line without braces.
+
+define int Good(int x) return x / 2;
+
+int value = Good(72);
+print value;
+
+# Ouput from Dr. Charles Ofria's sample compiler.
+  val_copy 72 s4 
+  push s4 
+  val_copy s4 s2 
+  push function_return_0                # Save return position on the execution stack.
+  jump function_Good                    # Call the function.
+function_return_0: 
+  val_copy s1 s5                        # Copy over return value.
+  pop s4 
+  val_copy s5 s3 
+  out_int s3 
+  out_char '\n'                         # End print statements with a newline.
+  nop 
+  nop 
+  nop                                   # ============ FUNCTIONS ============
+  jump define_functions_end             # Skip over function defs during normal execution
+  nop 
+  nop                                   # FUNCTION: Good
+function_Good: 
+  val_copy 2 s6 
+  div s2 s6 s7 
+  val_copy s7 s1 
+  pop s8 
+  jump s8 
+  pop s9 
+  jump s9 
+define_functions_end: 

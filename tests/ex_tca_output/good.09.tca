@@ -1,1 +1,1659 @@
-  store 1 0
+#=-=-= Ouput from Dr. Charles Ofria's sample compiler.
+  val_copy 105 regH                      # Setup regH to point to start of stack.
+  store 10105 0                         # Store next free memory at 0
+### Converting: val_copy 3 s11
+  val_copy 3 regB 
+  store regB 11
+### Converting: push s11
+  load 11 regA
+  store regA regH                       # Save loaded value onto the stack.
+  add regH 1 regH                       # Increment stack to next mem position
+
+### Converting: val_copy s11 s2
+  load 11 regA
+  val_copy regA regB 
+  store regB 2
+### Converting: push function_return_0
+  store function_return_0 regH                       # Save loaded value onto the stack.
+  add regH 1 regH                       # Increment stack to next mem position
+# Save return position on the execution stack.
+### Converting: jump function_zeros
+  jump function_zeros                   # Call the function.
+function_return_0:
+### Converting: ar_copy a1 a12
+  load 1 regA
+  jump_if_n0 regA ar_do_copy_0          # Jump if we actually have something to copy.
+  store 0 12                             # Set indirect pointer to new mem pos.
+  jump ar_copy_end_2
+ar_do_copy_0:
+  load 0 regB                           # Set regB = free mem position
+  store regB 12                          # Set indirect pointer to new mem pos.
+  load regA regC                        # Set regC = Array size.
+  add regB 1 regD                       # Set regD = first pos. in new array
+  add regD regC regD                    # Set regD = new free mem position
+  store regD 0                          # Store new free memory at pos. zero
+ar_copy_start_1:
+  test_equ regB regD regE               # If we are done copying, jump to end of loop
+  jump_if_n0 regE ar_copy_end_2
+  mem_copy regA regB                    # Copy the current index.
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regB 1 regB                       # Increment pointer for TO array
+  jump ar_copy_start_1
+ar_copy_end_2:
+# Copy over return value.
+### Converting: pop s11
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+
+  store regA 11
+### Converting: val_copy 0 s14
+  val_copy 0 regB                       # Init loop variable for copying array.
+  store regB 14
+### Converting: ar_get_siz a12 s13
+  load 12 regA
+  load regA regB                        # Save size of RHS array into variable.
+  store regB 13
+### Converting: ar_set_siz a7 s13
+  load 7 regA
+  load 13 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_0    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_0   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_2                  # Skip copying contents.
+ar_resize_do_copy_0:
+  load 0 regD                           # Set regD = free mem position
+  store regD 7                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_1:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_2
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_1
+ar_resize_end_2:
+# Make LHS same size as RHS.
+copy_array_start_1:
+### Converting: test_equ s14 s13 s15
+  load 14 regA
+  load 13 regB
+  test_equ regA regB regC               # Test if we are finished yet...
+  store regC 15
+### Converting: jump_if_n0 s15 copy_array_end_2
+  load 15 regA
+  jump_if_n0 regA copy_array_end_2      #  ...and jump if we are.
+### Converting: ar_get_idx a12 s14 s15
+  load 12 regA
+  load 14 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at next index.
+  store regC 15
+### Converting: ar_set_idx a7 s14 s15
+  load 7 regA
+  load 14 regB
+  load 15 regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA# Write this entry to the LHS!
+### Converting: add s14 1 s14
+  load 14 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 14
+### Converting: jump copy_array_start_1
+  jump copy_array_start_1               #  ...and jump if not.
+copy_array_end_2:
+### Converting: val_copy 4 s16
+  val_copy 4 regB 
+  store regB 16
+### Converting: push s16
+  load 16 regA
+  store regA regH                       # Save loaded value onto the stack.
+  add regH 1 regH                       # Increment stack to next mem position
+
+### Converting: val_copy s16 s2
+  load 16 regA
+  val_copy regA regB 
+  store regB 2
+### Converting: push function_return_3
+  store function_return_3 regH                       # Save loaded value onto the stack.
+  add regH 1 regH                       # Increment stack to next mem position
+# Save return position on the execution stack.
+### Converting: jump function_zeros
+  jump function_zeros                   # Call the function.
+function_return_3:
+### Converting: ar_copy a1 a17
+  load 1 regA
+  jump_if_n0 regA ar_do_copy_3          # Jump if we actually have something to copy.
+  store 0 17                             # Set indirect pointer to new mem pos.
+  jump ar_copy_end_5
+ar_do_copy_3:
+  load 0 regB                           # Set regB = free mem position
+  store regB 17                          # Set indirect pointer to new mem pos.
+  load regA regC                        # Set regC = Array size.
+  add regB 1 regD                       # Set regD = first pos. in new array
+  add regD regC regD                    # Set regD = new free mem position
+  store regD 0                          # Store new free memory at pos. zero
+ar_copy_start_4:
+  test_equ regB regD regE               # If we are done copying, jump to end of loop
+  jump_if_n0 regE ar_copy_end_5
+  mem_copy regA regB                    # Copy the current index.
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regB 1 regB                       # Increment pointer for TO array
+  jump ar_copy_start_4
+ar_copy_end_5:
+# Copy over return value.
+### Converting: pop s16
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+
+  store regA 16
+### Converting: val_copy 0 s19
+  val_copy 0 regB                       # Init loop variable for copying array.
+  store regB 19
+### Converting: ar_get_siz a17 s18
+  load 17 regA
+  load regA regB                        # Save size of RHS array into variable.
+  store regB 18
+### Converting: ar_set_siz a8 s18
+  load 8 regA
+  load 18 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_3    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_3   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_5                  # Skip copying contents.
+ar_resize_do_copy_3:
+  load 0 regD                           # Set regD = free mem position
+  store regD 8                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_4:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_5
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_4
+ar_resize_end_5:
+# Make LHS same size as RHS.
+copy_array_start_4:
+### Converting: test_equ s19 s18 s20
+  load 19 regA
+  load 18 regB
+  test_equ regA regB regC               # Test if we are finished yet...
+  store regC 20
+### Converting: jump_if_n0 s20 copy_array_end_5
+  load 20 regA
+  jump_if_n0 regA copy_array_end_5      #  ...and jump if we are.
+### Converting: ar_get_idx a17 s19 s20
+  load 17 regA
+  load 19 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at next index.
+  store regC 20
+### Converting: ar_set_idx a8 s19 s20
+  load 8 regA
+  load 19 regB
+  load 20 regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA# Write this entry to the LHS!
+### Converting: add s19 1 s19
+  load 19 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 19
+### Converting: jump copy_array_start_4
+  jump copy_array_start_4               #  ...and jump if not.
+copy_array_end_5:
+### Converting: val_copy 0 s21
+  val_copy 0 regB 
+  store regB 21
+### Converting: ar_get_idx a7 s21 s22
+  load 7 regA
+  load 21 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 22
+### Converting: val_copy 2 s23
+  val_copy 2 regB 
+  store regB 23
+### Converting: ar_set_idx a7 s21 s23
+  load 7 regA
+  load 21 regB
+  load 23 regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 1 s24
+  val_copy 1 regB 
+  store regB 24
+### Converting: ar_get_idx a7 s24 s25
+  load 7 regA
+  load 24 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 25
+### Converting: val_copy 3 s26
+  val_copy 3 regB 
+  store regB 26
+### Converting: ar_set_idx a7 s24 s26
+  load 7 regA
+  load 24 regB
+  load 26 regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 2 s27
+  val_copy 2 regB 
+  store regB 27
+### Converting: ar_get_idx a7 s27 s28
+  load 7 regA
+  load 27 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 28
+### Converting: val_copy 4 s29
+  val_copy 4 regB 
+  store regB 29
+### Converting: ar_set_idx a7 s27 s29
+  load 7 regA
+  load 27 regB
+  load 29 regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 1 s30
+  val_copy 1 regB 
+  store regB 30
+### Converting: ar_get_idx a8 s30 s31
+  load 8 regA
+  load 30 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 31
+### Converting: val_copy 5 s32
+  val_copy 5 regB 
+  store regB 32
+### Converting: ar_set_idx a8 s30 s32
+  load 8 regA
+  load 30 regB
+  load 32 regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_copy a7 a6
+  load 7 regA
+  jump_if_n0 regA ar_do_copy_6          # Jump if we actually have something to copy.
+  store 0 6                             # Set indirect pointer to new mem pos.
+  jump ar_copy_end_8
+ar_do_copy_6:
+  load 0 regB                           # Set regB = free mem position
+  store regB 6                          # Set indirect pointer to new mem pos.
+  load regA regC                        # Set regC = Array size.
+  add regB 1 regD                       # Set regD = first pos. in new array
+  add regD regC regD                    # Set regD = new free mem position
+  store regD 0                          # Store new free memory at pos. zero
+ar_copy_start_7:
+  test_equ regB regD regE               # If we are done copying, jump to end of loop
+  jump_if_n0 regE ar_copy_end_8
+  mem_copy regA regB                    # Copy the current index.
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regB 1 regB                       # Increment pointer for TO array
+  jump ar_copy_start_7
+ar_copy_end_8:
+
+### Converting: push function_return_6
+  store function_return_6 regH                       # Save loaded value onto the stack.
+  add regH 1 regH                       # Increment stack to next mem position
+# Save return position on the execution stack.
+### Converting: jump function_DistanceSquared
+  jump function_DistanceSquared         # Call the function.
+function_return_6:
+### Converting: val_copy s5 s33
+  load 5 regA
+  val_copy regA regB                    # Copy over return value.
+  store regB 33
+### Converting: val_copy s33 s9
+  load 33 regA
+  val_copy regA regB 
+  store regB 9
+### Converting: ar_copy a8 a6
+  load 8 regA
+  jump_if_n0 regA ar_do_copy_9          # Jump if we actually have something to copy.
+  store 0 6                             # Set indirect pointer to new mem pos.
+  jump ar_copy_end_11
+ar_do_copy_9:
+  load 0 regB                           # Set regB = free mem position
+  store regB 6                          # Set indirect pointer to new mem pos.
+  load regA regC                        # Set regC = Array size.
+  add regB 1 regD                       # Set regD = first pos. in new array
+  add regD regC regD                    # Set regD = new free mem position
+  store regD 0                          # Store new free memory at pos. zero
+ar_copy_start_10:
+  test_equ regB regD regE               # If we are done copying, jump to end of loop
+  jump_if_n0 regE ar_copy_end_11
+  mem_copy regA regB                    # Copy the current index.
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regB 1 regB                       # Increment pointer for TO array
+  jump ar_copy_start_10
+ar_copy_end_11:
+
+### Converting: push function_return_7
+  store function_return_7 regH                       # Save loaded value onto the stack.
+  add regH 1 regH                       # Increment stack to next mem position
+# Save return position on the execution stack.
+### Converting: jump function_DistanceSquared
+  jump function_DistanceSquared         # Call the function.
+function_return_7:
+### Converting: val_copy s5 s34
+  load 5 regA
+  val_copy regA regB                    # Copy over return value.
+  store regB 34
+### Converting: val_copy s34 s10
+  load 34 regA
+  val_copy regA regB 
+  store regB 10
+### Converting: val_copy 1 s35
+  val_copy 1 regB 
+  store regB 35
+### Converting: mult s35 -1 s36
+  load 35 regA
+  mult regA -1 regC 
+  store regC 36
+### Converting: test_equ s9 s36 s37
+  load 9 regA
+  load 36 regB
+  test_equ regA regB regC 
+  store regC 37
+### Converting: jump_if_0 s37 if_else_8
+  load 37 regA
+  jump_if_0 regA if_else_8 
+### Converting: ar_set_siz a38 20
+  load 38 regA
+  val_copy 20 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_6    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_6   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_8                  # Skip copying contents.
+ar_resize_do_copy_6:
+  load 0 regD                           # Set regD = free mem position
+  store regD 38                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_7:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_8
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_7
+ar_resize_end_8:
+
+### Converting: ar_set_idx a38 0 'I'
+  load 38 regA
+  val_copy 0 regB
+  val_copy 'I' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 1 'n'
+  load 38 regA
+  val_copy 1 regB
+  val_copy 'n' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 2 'v'
+  load 38 regA
+  val_copy 2 regB
+  val_copy 'v' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 3 'a'
+  load 38 regA
+  val_copy 3 regB
+  val_copy 'a' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 4 'l'
+  load 38 regA
+  val_copy 4 regB
+  val_copy 'l' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 5 'i'
+  load 38 regA
+  val_copy 5 regB
+  val_copy 'i' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 6 'd'
+  load 38 regA
+  val_copy 6 regB
+  val_copy 'd' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 7 ' '
+  load 38 regA
+  val_copy 7 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 8 'a'
+  load 38 regA
+  val_copy 8 regB
+  val_copy 'a' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 9 'l'
+  load 38 regA
+  val_copy 9 regB
+  val_copy 'l' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 10 'p'
+  load 38 regA
+  val_copy 10 regB
+  val_copy 'p' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 11 'h'
+  load 38 regA
+  val_copy 11 regB
+  val_copy 'h' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 12 'a'
+  load 38 regA
+  val_copy 12 regB
+  val_copy 'a' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 13 ' '
+  load 38 regA
+  val_copy 13 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 14 'v'
+  load 38 regA
+  val_copy 14 regB
+  val_copy 'v' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 15 'e'
+  load 38 regA
+  val_copy 15 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 16 'c'
+  load 38 regA
+  val_copy 16 regB
+  val_copy 'c' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 17 't'
+  load 38 regA
+  val_copy 17 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 18 'o'
+  load 38 regA
+  val_copy 18 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a38 19 'r'
+  load 38 regA
+  val_copy 19 regB
+  val_copy 'r' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 0 s40
+  val_copy 0 regB                       # Init loop variable for printing array.
+  store regB 40
+### Converting: ar_get_siz a38 s39
+  load 38 regA
+  load regA regB                        # Save size of array into variable.
+  store regB 39
+print_array_start_10:
+### Converting: test_gte s40 s39 s41
+  load 40 regA
+  load 39 regB
+  test_gte regA regB regC               # Test if we are finished yet...
+  store regC 41
+### Converting: jump_if_n0 s41 print_array_end_11
+  load 41 regA
+  jump_if_n0 regA print_array_end_11    #  ...and jump to end if so.
+### Converting: ar_get_idx a38 s40 s41
+  load 38 regA
+  load 40 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at the next index.
+  store regC 41
+### Converting: out_char s41
+  load 41 regA
+  out_char regA                         # Print this entry!
+### Converting: add s40 1 s40
+  load 40 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 40
+### Converting: jump print_array_start_10
+  jump print_array_start_10 
+print_array_end_11:
+### Converting: out_char '\n'
+  out_char '\n'                         # End print statements with a newline.
+### Converting: jump if_end_9
+  jump if_end_9 
+if_else_8:
+### Converting: ar_set_siz a42 17
+  load 42 regA
+  val_copy 17 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_9    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_9   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_11                  # Skip copying contents.
+ar_resize_do_copy_9:
+  load 0 regD                           # Set regD = free mem position
+  store regD 42                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_10:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_11
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_10
+ar_resize_end_11:
+
+### Converting: ar_set_idx a42 0 'G'
+  load 42 regA
+  val_copy 0 regB
+  val_copy 'G' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 1 'o'
+  load 42 regA
+  val_copy 1 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 2 'o'
+  load 42 regA
+  val_copy 2 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 3 'd'
+  load 42 regA
+  val_copy 3 regB
+  val_copy 'd' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 4 ' '
+  load 42 regA
+  val_copy 4 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 5 'a'
+  load 42 regA
+  val_copy 5 regB
+  val_copy 'a' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 6 'l'
+  load 42 regA
+  val_copy 6 regB
+  val_copy 'l' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 7 'p'
+  load 42 regA
+  val_copy 7 regB
+  val_copy 'p' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 8 'h'
+  load 42 regA
+  val_copy 8 regB
+  val_copy 'h' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 9 'a'
+  load 42 regA
+  val_copy 9 regB
+  val_copy 'a' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 10 ' '
+  load 42 regA
+  val_copy 10 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 11 'v'
+  load 42 regA
+  val_copy 11 regB
+  val_copy 'v' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 12 'e'
+  load 42 regA
+  val_copy 12 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 13 'c'
+  load 42 regA
+  val_copy 13 regB
+  val_copy 'c' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 14 't'
+  load 42 regA
+  val_copy 14 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 15 'o'
+  load 42 regA
+  val_copy 15 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a42 16 'r'
+  load 42 regA
+  val_copy 16 regB
+  val_copy 'r' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 0 s44
+  val_copy 0 regB                       # Init loop variable for printing array.
+  store regB 44
+### Converting: ar_get_siz a42 s43
+  load 42 regA
+  load regA regB                        # Save size of array into variable.
+  store regB 43
+print_array_start_12:
+### Converting: test_gte s44 s43 s45
+  load 44 regA
+  load 43 regB
+  test_gte regA regB regC               # Test if we are finished yet...
+  store regC 45
+### Converting: jump_if_n0 s45 print_array_end_13
+  load 45 regA
+  jump_if_n0 regA print_array_end_13    #  ...and jump to end if so.
+### Converting: ar_get_idx a42 s44 s45
+  load 42 regA
+  load 44 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at the next index.
+  store regC 45
+### Converting: out_char s45
+  load 45 regA
+  out_char regA                         # Print this entry!
+### Converting: add s44 1 s44
+  load 44 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 44
+### Converting: jump print_array_start_12
+  jump print_array_start_12 
+print_array_end_13:
+### Converting: out_char '\n'
+  out_char '\n'                         # End print statements with a newline.
+if_end_9:
+### Converting: val_copy 0 s47
+  val_copy 0 regB                       # Init loop variable for printing array.
+  store regB 47
+### Converting: ar_get_siz a7 s46
+  load 7 regA
+  load regA regB                        # Save size of array into variable.
+  store regB 46
+print_array_start_14:
+### Converting: test_gte s47 s46 s48
+  load 47 regA
+  load 46 regB
+  test_gte regA regB regC               # Test if we are finished yet...
+  store regC 48
+### Converting: jump_if_n0 s48 print_array_end_15
+  load 48 regA
+  jump_if_n0 regA print_array_end_15    #  ...and jump to end if so.
+### Converting: ar_get_idx a7 s47 s48
+  load 7 regA
+  load 47 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at the next index.
+  store regC 48
+### Converting: out_int s48
+  load 48 regA
+  out_int regA                          # Print this entry!
+### Converting: add s47 1 s47
+  load 47 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 47
+### Converting: jump print_array_start_14
+  jump print_array_start_14 
+print_array_end_15:
+### Converting: ar_set_siz a49 2
+  load 49 regA
+  val_copy 2 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_12    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_12   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_14                  # Skip copying contents.
+ar_resize_do_copy_12:
+  load 0 regD                           # Set regD = free mem position
+  store regD 49                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_13:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_14
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_13
+ar_resize_end_14:
+
+### Converting: ar_set_idx a49 0 ' '
+  load 49 regA
+  val_copy 0 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a49 1 ' '
+  load 49 regA
+  val_copy 1 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 0 s51
+  val_copy 0 regB                       # Init loop variable for printing array.
+  store regB 51
+### Converting: ar_get_siz a49 s50
+  load 49 regA
+  load regA regB                        # Save size of array into variable.
+  store regB 50
+print_array_start_16:
+### Converting: test_gte s51 s50 s52
+  load 51 regA
+  load 50 regB
+  test_gte regA regB regC               # Test if we are finished yet...
+  store regC 52
+### Converting: jump_if_n0 s52 print_array_end_17
+  load 52 regA
+  jump_if_n0 regA print_array_end_17    #  ...and jump to end if so.
+### Converting: ar_get_idx a49 s51 s52
+  load 49 regA
+  load 51 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at the next index.
+  store regC 52
+### Converting: out_char s52
+  load 52 regA
+  out_char regA                         # Print this entry!
+### Converting: add s51 1 s51
+  load 51 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 51
+### Converting: jump print_array_start_16
+  jump print_array_start_16 
+print_array_end_17:
+### Converting: out_int s9
+  load 9 regA
+  out_int regA 
+### Converting: out_char '\n'
+  out_char '\n'                         # End print statements with a newline.
+### Converting: val_copy 1 s53
+  val_copy 1 regB 
+  store regB 53
+### Converting: mult s53 -1 s54
+  load 53 regA
+  mult regA -1 regC 
+  store regC 54
+### Converting: test_equ s10 s54 s55
+  load 10 regA
+  load 54 regB
+  test_equ regA regB regC 
+  store regC 55
+### Converting: jump_if_0 s55 if_else_18
+  load 55 regA
+  jump_if_0 regA if_else_18 
+### Converting: ar_set_siz a56 19
+  load 56 regA
+  val_copy 19 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_15    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_15   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_17                  # Skip copying contents.
+ar_resize_do_copy_15:
+  load 0 regD                           # Set regD = free mem position
+  store regD 56                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_16:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_17
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_16
+ar_resize_end_17:
+
+### Converting: ar_set_idx a56 0 'I'
+  load 56 regA
+  val_copy 0 regB
+  val_copy 'I' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 1 'n'
+  load 56 regA
+  val_copy 1 regB
+  val_copy 'n' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 2 'v'
+  load 56 regA
+  val_copy 2 regB
+  val_copy 'v' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 3 'a'
+  load 56 regA
+  val_copy 3 regB
+  val_copy 'a' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 4 'l'
+  load 56 regA
+  val_copy 4 regB
+  val_copy 'l' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 5 'i'
+  load 56 regA
+  val_copy 5 regB
+  val_copy 'i' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 6 'd'
+  load 56 regA
+  val_copy 6 regB
+  val_copy 'd' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 7 ' '
+  load 56 regA
+  val_copy 7 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 8 'b'
+  load 56 regA
+  val_copy 8 regB
+  val_copy 'b' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 9 'e'
+  load 56 regA
+  val_copy 9 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 10 't'
+  load 56 regA
+  val_copy 10 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 11 'a'
+  load 56 regA
+  val_copy 11 regB
+  val_copy 'a' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 12 ' '
+  load 56 regA
+  val_copy 12 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 13 'v'
+  load 56 regA
+  val_copy 13 regB
+  val_copy 'v' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 14 'e'
+  load 56 regA
+  val_copy 14 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 15 'c'
+  load 56 regA
+  val_copy 15 regB
+  val_copy 'c' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 16 't'
+  load 56 regA
+  val_copy 16 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 17 'o'
+  load 56 regA
+  val_copy 17 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a56 18 'r'
+  load 56 regA
+  val_copy 18 regB
+  val_copy 'r' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 0 s58
+  val_copy 0 regB                       # Init loop variable for printing array.
+  store regB 58
+### Converting: ar_get_siz a56 s57
+  load 56 regA
+  load regA regB                        # Save size of array into variable.
+  store regB 57
+print_array_start_20:
+### Converting: test_gte s58 s57 s59
+  load 58 regA
+  load 57 regB
+  test_gte regA regB regC               # Test if we are finished yet...
+  store regC 59
+### Converting: jump_if_n0 s59 print_array_end_21
+  load 59 regA
+  jump_if_n0 regA print_array_end_21    #  ...and jump to end if so.
+### Converting: ar_get_idx a56 s58 s59
+  load 56 regA
+  load 58 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at the next index.
+  store regC 59
+### Converting: out_char s59
+  load 59 regA
+  out_char regA                         # Print this entry!
+### Converting: add s58 1 s58
+  load 58 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 58
+### Converting: jump print_array_start_20
+  jump print_array_start_20 
+print_array_end_21:
+### Converting: out_char '\n'
+  out_char '\n'                         # End print statements with a newline.
+### Converting: jump if_end_19
+  jump if_end_19 
+if_else_18:
+### Converting: ar_set_siz a60 16
+  load 60 regA
+  val_copy 16 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_18    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_18   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_20                  # Skip copying contents.
+ar_resize_do_copy_18:
+  load 0 regD                           # Set regD = free mem position
+  store regD 60                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_19:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_20
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_19
+ar_resize_end_20:
+
+### Converting: ar_set_idx a60 0 'G'
+  load 60 regA
+  val_copy 0 regB
+  val_copy 'G' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 1 'o'
+  load 60 regA
+  val_copy 1 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 2 'o'
+  load 60 regA
+  val_copy 2 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 3 'd'
+  load 60 regA
+  val_copy 3 regB
+  val_copy 'd' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 4 ' '
+  load 60 regA
+  val_copy 4 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 5 'b'
+  load 60 regA
+  val_copy 5 regB
+  val_copy 'b' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 6 'e'
+  load 60 regA
+  val_copy 6 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 7 't'
+  load 60 regA
+  val_copy 7 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 8 'a'
+  load 60 regA
+  val_copy 8 regB
+  val_copy 'a' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 9 ' '
+  load 60 regA
+  val_copy 9 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 10 'v'
+  load 60 regA
+  val_copy 10 regB
+  val_copy 'v' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 11 'e'
+  load 60 regA
+  val_copy 11 regB
+  val_copy 'e' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 12 'c'
+  load 60 regA
+  val_copy 12 regB
+  val_copy 'c' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 13 't'
+  load 60 regA
+  val_copy 13 regB
+  val_copy 't' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 14 'o'
+  load 60 regA
+  val_copy 14 regB
+  val_copy 'o' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a60 15 'r'
+  load 60 regA
+  val_copy 15 regB
+  val_copy 'r' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 0 s62
+  val_copy 0 regB                       # Init loop variable for printing array.
+  store regB 62
+### Converting: ar_get_siz a60 s61
+  load 60 regA
+  load regA regB                        # Save size of array into variable.
+  store regB 61
+print_array_start_22:
+### Converting: test_gte s62 s61 s63
+  load 62 regA
+  load 61 regB
+  test_gte regA regB regC               # Test if we are finished yet...
+  store regC 63
+### Converting: jump_if_n0 s63 print_array_end_23
+  load 63 regA
+  jump_if_n0 regA print_array_end_23    #  ...and jump to end if so.
+### Converting: ar_get_idx a60 s62 s63
+  load 60 regA
+  load 62 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at the next index.
+  store regC 63
+### Converting: out_char s63
+  load 63 regA
+  out_char regA                         # Print this entry!
+### Converting: add s62 1 s62
+  load 62 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 62
+### Converting: jump print_array_start_22
+  jump print_array_start_22 
+print_array_end_23:
+### Converting: out_char '\n'
+  out_char '\n'                         # End print statements with a newline.
+if_end_19:
+### Converting: val_copy 0 s65
+  val_copy 0 regB                       # Init loop variable for printing array.
+  store regB 65
+### Converting: ar_get_siz a8 s64
+  load 8 regA
+  load regA regB                        # Save size of array into variable.
+  store regB 64
+print_array_start_24:
+### Converting: test_gte s65 s64 s66
+  load 65 regA
+  load 64 regB
+  test_gte regA regB regC               # Test if we are finished yet...
+  store regC 66
+### Converting: jump_if_n0 s66 print_array_end_25
+  load 66 regA
+  jump_if_n0 regA print_array_end_25    #  ...and jump to end if so.
+### Converting: ar_get_idx a8 s65 s66
+  load 8 regA
+  load 65 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at the next index.
+  store regC 66
+### Converting: out_int s66
+  load 66 regA
+  out_int regA                          # Print this entry!
+### Converting: add s65 1 s65
+  load 65 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 65
+### Converting: jump print_array_start_24
+  jump print_array_start_24 
+print_array_end_25:
+### Converting: ar_set_siz a67 2
+  load 67 regA
+  val_copy 2 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_21    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_21   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_23                  # Skip copying contents.
+ar_resize_do_copy_21:
+  load 0 regD                           # Set regD = free mem position
+  store regD 67                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_22:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_23
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_22
+ar_resize_end_23:
+
+### Converting: ar_set_idx a67 0 ' '
+  load 67 regA
+  val_copy 0 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: ar_set_idx a67 1 ' '
+  load 67 regA
+  val_copy 1 regB
+  val_copy ' ' regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 0 s69
+  val_copy 0 regB                       # Init loop variable for printing array.
+  store regB 69
+### Converting: ar_get_siz a67 s68
+  load 67 regA
+  load regA regB                        # Save size of array into variable.
+  store regB 68
+print_array_start_26:
+### Converting: test_gte s69 s68 s70
+  load 69 regA
+  load 68 regB
+  test_gte regA regB regC               # Test if we are finished yet...
+  store regC 70
+### Converting: jump_if_n0 s70 print_array_end_27
+  load 70 regA
+  jump_if_n0 regA print_array_end_27    #  ...and jump to end if so.
+### Converting: ar_get_idx a67 s69 s70
+  load 67 regA
+  load 69 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC# Collect the value at the next index.
+  store regC 70
+### Converting: out_char s70
+  load 70 regA
+  out_char regA                         # Print this entry!
+### Converting: add s69 1 s69
+  load 69 regA
+  add regA 1 regC                       # Increment to the next index.
+  store regC 69
+### Converting: jump print_array_start_26
+  jump print_array_start_26 
+print_array_end_27:
+### Converting: out_int s10
+  load 10 regA
+  out_int regA 
+### Converting: out_char '\n'
+  out_char '\n'                         # End print statements with a newline.
+### Converting: nop
+  nop 
+### Converting: nop
+  nop 
+### Converting: nop
+  nop                                   # ============ FUNCTIONS ============
+### Converting: jump define_functions_end
+  jump define_functions_end             # Skip over function defs during normal execution
+### Converting: nop
+  nop 
+### Converting: nop
+  nop                                   # FUNCTION: DistanceSquared
+function_DistanceSquared:
+### Converting: ar_get_siz a6 s71
+  load 6 regA
+  load regA regB
+  store regB 71
+### Converting: val_copy 3 s72
+  val_copy 3 regB 
+  store regB 72
+### Converting: test_nequ s71 s72 s73
+  load 71 regA
+  load 72 regB
+  test_nequ regA regB regC 
+  store regC 73
+### Converting: jump_if_0 s73 if_else_28
+  load 73 regA
+  jump_if_0 regA if_else_28 
+### Converting: val_copy 1 s74
+  val_copy 1 regB 
+  store regB 74
+### Converting: mult s74 -1 s75
+  load 74 regA
+  mult regA -1 regC 
+  store regC 75
+### Converting: val_copy s75 s5
+  load 75 regA
+  val_copy regA regB 
+  store regB 5
+### Converting: pop s76
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+
+  store regA 76
+### Converting: jump s76
+  load 76 regA
+  jump regA 
+### Converting: jump if_end_29
+  jump if_end_29 
+if_else_28:
+if_end_29:
+### Converting: val_copy 0 s77
+  val_copy 0 regB 
+  store regB 77
+### Converting: ar_get_idx a6 s77 s78
+  load 6 regA
+  load 77 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 78
+### Converting: val_copy 0 s79
+  val_copy 0 regB 
+  store regB 79
+### Converting: ar_get_idx a6 s79 s80
+  load 6 regA
+  load 79 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 80
+### Converting: mult s78 s80 s81
+  load 78 regA
+  load 80 regB
+  mult regA regB regC 
+  store regC 81
+### Converting: val_copy 1 s82
+  val_copy 1 regB 
+  store regB 82
+### Converting: ar_get_idx a6 s82 s83
+  load 6 regA
+  load 82 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 83
+### Converting: val_copy 1 s84
+  val_copy 1 regB 
+  store regB 84
+### Converting: ar_get_idx a6 s84 s85
+  load 6 regA
+  load 84 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 85
+### Converting: mult s83 s85 s86
+  load 83 regA
+  load 85 regB
+  mult regA regB regC 
+  store regC 86
+### Converting: add s81 s86 s87
+  load 81 regA
+  load 86 regB
+  add regA regB regC 
+  store regC 87
+### Converting: val_copy 2 s88
+  val_copy 2 regB 
+  store regB 88
+### Converting: ar_get_idx a6 s88 s89
+  load 6 regA
+  load 88 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 89
+### Converting: val_copy 2 s90
+  val_copy 2 regB 
+  store regB 90
+### Converting: ar_get_idx a6 s90 s91
+  load 6 regA
+  load 90 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 91
+### Converting: mult s89 s91 s92
+  load 89 regA
+  load 91 regB
+  mult regA regB regC 
+  store regC 92
+### Converting: add s87 s92 s93
+  load 87 regA
+  load 92 regB
+  add regA regB regC 
+  store regC 93
+### Converting: val_copy s93 s5
+  load 93 regA
+  val_copy regA regB 
+  store regB 5
+### Converting: pop s94
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+
+  store regA 94
+### Converting: jump s94
+  load 94 regA
+  jump regA 
+### Converting: pop s95
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+
+  store regA 95
+### Converting: jump s95
+  load 95 regA
+  jump regA 
+### Converting: nop
+  nop                                   # FUNCTION: zeros
+function_zeros:
+### Converting: ar_set_siz a3 s2
+  load 3 regA
+  load 2 regB
+  val_copy 0 regC                       # Default old array size to 0 if uninitialized.
+  jump_if_0 regA ar_resize_do_copy_24    # Leave 0 size (nothing to copy) for uninitialized arrays.
+  load regA regC                        # Load old array size into regC
+  test_gtr regB regC regD               # regD = new_size > old_size?
+  jump_if_n0 regD ar_resize_do_copy_24   # Jump to array copy if new size is bigger than old size.
+  store regB regA                       # Otherwise, replace old size w/ new size.  Done.
+  jump ar_resize_end_26                  # Skip copying contents.
+ar_resize_do_copy_24:
+  load 0 regD                           # Set regD = free mem position
+  store regD 3                          # Set indirect pointer to new mem pos.
+  store regB regD                       # Store new size at new array start
+  add regD 1 regE                       # Set regE = first pos. in new array
+  add regE regB regE                    # Set regE = new free mem position
+  store regE 0                          # Store new free memory at pos. zero
+  add regA regC regE                    # Set regE = the last index to be copied
+ar_resize_start_25:
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regD 1 regD                       # Increment pointer for TO array
+  test_gtr regA regE regF               # If we are done copying, jump to end of loop
+  jump_if_n0 regF ar_resize_end_26
+  mem_copy regA regD                    # Copy the current index.
+  jump ar_resize_start_25
+ar_resize_end_26:
+
+### Converting: val_copy 0 s97
+  val_copy 0 regB 
+  store regB 97
+### Converting: val_copy s97 s4
+  load 97 regA
+  val_copy regA regB 
+  store regB 4
+while_start_30:
+### Converting: test_less s4 s2 s98
+  load 4 regA
+  load 2 regB
+  test_less regA regB regC 
+  store regC 98
+### Converting: jump_if_0 s98 while_end_31
+  load 98 regA
+  jump_if_0 regA while_end_31 
+### Converting: ar_get_idx a3 s4 s99
+  load 3 regA
+  load 4 regB
+  add regA 1 regA
+  add regA regB regA
+  load regA regC
+  store regC 99
+### Converting: val_copy 0 s100
+  val_copy 0 regB 
+  store regB 100
+### Converting: ar_set_idx a3 s4 s100
+  load 3 regA
+  load 4 regB
+  load 100 regC
+  add regA 1 regA
+  add regA regB regA
+  store regC regA
+### Converting: val_copy 1 s101
+  val_copy 1 regB 
+  store regB 101
+### Converting: add s4 s101 s102
+  load 4 regA
+  load 101 regB
+  add regA regB regC 
+  store regC 102
+### Converting: val_copy s102 s4
+  load 102 regA
+  val_copy regA regB 
+  store regB 4
+### Converting: jump while_start_30
+  jump while_start_30 
+while_end_31:
+### Converting: ar_copy a3 a1
+  load 3 regA
+  jump_if_n0 regA ar_do_copy_12          # Jump if we actually have something to copy.
+  store 0 1                             # Set indirect pointer to new mem pos.
+  jump ar_copy_end_14
+ar_do_copy_12:
+  load 0 regB                           # Set regB = free mem position
+  store regB 1                          # Set indirect pointer to new mem pos.
+  load regA regC                        # Set regC = Array size.
+  add regB 1 regD                       # Set regD = first pos. in new array
+  add regD regC regD                    # Set regD = new free mem position
+  store regD 0                          # Store new free memory at pos. zero
+ar_copy_start_13:
+  test_equ regB regD regE               # If we are done copying, jump to end of loop
+  jump_if_n0 regE ar_copy_end_14
+  mem_copy regA regB                    # Copy the current index.
+  add regA 1 regA                       # Increment pointer for FROM array
+  add regB 1 regB                       # Increment pointer for TO array
+  jump ar_copy_start_13
+ar_copy_end_14:
+
+### Converting: pop s103
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+
+  store regA 103
+### Converting: jump s103
+  load 103 regA
+  jump regA 
+### Converting: pop s104
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+
+  store regA 104
+### Converting: jump s104
+  load 104 regA
+  jump regA 
+define_functions_end:

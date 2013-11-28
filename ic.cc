@@ -47,6 +47,9 @@ void IC_Entry::PrintTC(symbolTable & table, ofstream & ofs)
     case Instr::DIV: return PrintTC_Div(ofs);
     case Instr::MOD: return PrintTC_Mod(ofs);
     case Instr::RANDOM: return PrintTC_Random(ofs);
+    case Instr::NOP: return PrintTC_Nop(ofs);
+    case Instr::PUSH: return PrintTC_Push(ofs);
+    case Instr::POP: return PrintTC_Pop(ofs);
     case Instr::__NO_INSTRUCTION__:
     default: return;
   };
@@ -301,6 +304,11 @@ void IC_Entry::PrintTC_Jump(ofstream & ofs)
   {
   	ofs << "  jump " << args[0]->AsString() << endl;
   }
+  else if (args[0]->IsScalar())
+  {
+   ofs << "  load " << args[0]->GetID() << " regA" << endl;
+   ofs << "  jump regA" << endl; 
+  }
 };
   
 void IC_Entry::PrintTC_Jump_If_N0(ofstream & ofs)
@@ -430,6 +438,33 @@ void IC_Entry::PrintTC_Random(ofstream & ofs)
   	ofs << "  store regB " << args[1]->GetID() << endl;
   }
 };
+  
+void IC_Entry::PrintTC_Nop(ofstream & ofs)
+{
+  ofs << "  nop " << endl;
+};
+
+void IC_Entry::PrintTC_Push(ofstream & ofs)
+{
+   if (args[0]->IsScalar())
+   {
+     ofs << "  load " << args[0]->GetID() << " regA" << endl;
+     ofs << "  store regA regH" << endl;
+   }
+   else if (args[0]->IsConst())
+   {
+     ofs << "  store " << args[0]->AsString() << " regH" << endl;
+   }
+   
+   ofs << "  add regH 1 regH" << endl;
+}
+
+void IC_Entry::PrintTC_Pop(ofstream & ofs)
+{
+  ofs << "  sub regH 1 regH                       # Decrement stack to prev mem position" << endl;
+  ofs << "  load regH regA                        # Load stored value from the stack." << endl;
+  ofs << "  store regA " << args[0]->GetID() << endl;
+}
   
 IC_Entry& IC_Array::AddLabel(string label_id, string cmt)
 {
@@ -577,10 +612,12 @@ void IC_Array::PrintTC(symbolTable & table, ofstream & ofs)
   table.ResetLabelID();
   
   int next_free_memory_loc = table.GetTempVarID();
-  ofs << "  store " << next_free_memory_loc << " 0" << endl;
+  ofs << "# Matthew Wein's Compiler" << endl;
+  ofs << "  val_copy " << next_free_memory_loc << " regH" << endl;
+  ofs << "  store " << 10000 + next_free_memory_loc << " 0" << endl;
   table.FreeTempVarID(next_free_memory_loc);
-  
+
   for (int i = 0; i < (int) ic_array.size(); i++) {
     ic_array[i]->PrintTC(table, ofs);
-  }
+  } 
 }

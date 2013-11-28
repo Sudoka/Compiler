@@ -1,5 +1,10 @@
-# A simple test of define w/out even calling the function...
+# A simple test with no arguments...
 
-define int Inc(int x) {
-  return 4;
+define int factorial(int n)
+{
+   print n;
+   if (n == 1) return n;
+   return n * factorial(n - 1);
 }
+
+print factorial(2);

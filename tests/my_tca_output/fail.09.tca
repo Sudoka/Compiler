@@ -1,0 +1,36 @@
+# Matthew Wein's Compiler
+  val_copy 6 regH
+  store 10006 0
+### Converting: val_copy 4 s3 
+  val_copy 4 regB
+  store regB 3
+### Converting: val_copy s3 s1 
+  load 3 regA
+  val_copy regA regB
+  store regB 1
+### Converting: val_copy 5 s4 
+  val_copy 5 regB
+  store regB 4
+### Converting: test_less s1 s4 s5 
+  load 1 regA
+  load 4 regB
+  test_less regA regB regC
+  store regC 5
+### Converting: jump_if_0 s5 if_else_0 
+  load 5 regA
+  jump_if_0 regA if_else_0
+### Converting: jump if_end_1 
+  jump if_end_1
+if_else_0: 
+if_end_1: 
+### Converting: nop 
+  nop 
+### Converting: nop 
+  nop 
+### Converting: nop                     # ============ FUNCTIONS ============
+  nop 
+### Converting: jump define_functions_end # Skip over function defs during normal execution
+  jump define_functions_end
+### Converting: nop 
+  nop 
+define_functions_end: 

@@ -1,9 +1,7 @@
 # Basic test of functions...
 
-define int Inc(int x) {
-  return x + 1;
+define int Add(char x, int y) {
+  return y;
 }
 
-int value = Inc(72);
-print value;
-
+Add('c', 3);

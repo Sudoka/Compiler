@@ -17,7 +17,9 @@
 
 using namespace std;
 
+class ASTNode_FunctionDefinition;
 class symbolTable;
+class IC_Array;
 
 class tableEntry {
   friend class symbolTable;
@@ -28,6 +30,10 @@ protected:
   int var_id;        // What is the intermediate code ID for this variable?
   int array_id;      // If this variable is an array index, which array?
   int index_id;      // If this variable is an array index, which index?
+  vector<tableEntry * > args; // Arguments for functions
+  
+  bool is_function;  // Is this variable for a function
+  ASTNode_FunctionDefinition * ast_node;
 
   tableEntry(int in_type) 
     : type_id (in_type)
@@ -36,6 +42,8 @@ protected:
     , var_id(-1)
     , array_id(-1)
     , index_id(-1)
+    , is_function(false)
+    , ast_node(NULL)
   {
   }
 
@@ -46,20 +54,40 @@ protected:
     , var_id(-1)
     , array_id(-1)
     , index_id(-1)
+    , is_function(false)
+    , ast_node(NULL)
   {
   }
+
+  tableEntry(int in_type, const string in_name, ASTNode_FunctionDefinition * ast_node_pointer)
+    : type_id(in_type)
+    , name(in_name)
+    , is_temp(false)
+    , var_id(-1)
+    , array_id(-1)
+    , index_id(-1)
+    , is_function(true)
+    , ast_node(ast_node_pointer)
+  {
+  }
+
   virtual ~tableEntry() { ; }
 
 public:
   int GetType()        const { return type_id; }
   string GetName()     const { return name; }
   bool GetTemp()       const { return is_temp; }
+  bool GetFunction()   const { return is_function; }
   int GetVarID()       const { return var_id; }
   int GetArrayID()     const { return array_id; }
   int GetIndexID()     const { return index_id; }
-
+  void SetASTNode_FunctionDefinition(ASTNode_FunctionDefinition * fd) { ast_node = fd; }
+  ASTNode_FunctionDefinition * GetASTNode_FunctionDefinition() const { return ast_node; }
+  void AddArg(tableEntry * arg) { args.push_back(arg); }
+  vector<tableEntry *> GetArgs() { return args; }
   void SetName(string in_name) { name = in_name; }
   void SetVarID(int in_id) { var_id = in_id; }
+  void SetFunction(bool func) { is_function = func; }
   void SetArrayIndex(int a, int i) { array_id = a; index_id = i; }
 };
 
@@ -93,6 +121,7 @@ public:
     scope_info.push_back(new vector<tableEntry *>);
     cur_scope++;
   }
+
   void DecScope() {
     // Remove variables in the old scope and store them in the archive.
     vector<tableEntry *> * old_scope = scope_info.back();
@@ -142,6 +171,32 @@ public:
     tableEntry * new_entry = new tableEntry(in_type);
     new_entry->SetVarID( GetNextID() );
     return new_entry;
+  }
+
+  // Insert a function entry into the symbol table.
+  tableEntry * AddFunction(int in_type, string in_name) {
+    tableEntry * new_entry = new tableEntry(in_type, in_name, NULL);
+    new_entry->SetVarID( GetNextID() );
+    tbl_map[in_name] = new_entry;
+    scope_info[cur_scope]->push_back(new_entry);
+    return new_entry;
+  }
+
+  vector<tableEntry *> getFunctions()
+  {
+    vector<tableEntry *> functions;
+
+    map<string, tableEntry *>::iterator it;
+				for (it = tbl_map.begin(); it != tbl_map.end(); ++it)
+				{
+						tableEntry * entry = it->second;
+						if ( entry != NULL && entry->GetFunction() &&  entry->GetASTNode_FunctionDefinition() != NULL )
+						{
+								functions.push_back(entry);
+						}
+				}
+
+				return functions;
   }
 
   // Don't create a full variable; just get an unused variable ID.

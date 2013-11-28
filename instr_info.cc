@@ -25,6 +25,9 @@ namespace Instr {
     case DIV: return "div";
     case MOD: return "mod";
     case RANDOM: return "random";
+    case NOP: return "nop";
+    case PUSH: return "push";
+    case POP: return "pop";
     case __NO_INSTRUCTION__: return "";
     };
     return "unknown";

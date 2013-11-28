@@ -1,1 +1,101 @@
-  store 1 0
+# Matthew Wein's Compiler
+  val_copy 12 regH
+  store 10012 0
+### Converting: val_copy 2 s3 
+  val_copy 2 regB
+  store regB 3
+### Converting: val_copy s3 s2 
+  load 3 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_0 
+  store function_return_0 regH
+  add regH 1 regH
+### Converting: jump function_factorial 
+  jump function_factorial
+function_return_0: 
+### Converting: val_copy s1 s4 
+  load 1 regA
+  val_copy regA regB
+  store regB 4
+### Converting: out_int s4 
+  load 4 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: nop 
+  nop 
+### Converting: nop 
+  nop 
+### Converting: nop                     # ============ FUNCTIONS ============
+  nop 
+### Converting: jump define_functions_end # Skip over function defs during normal execution
+  jump define_functions_end
+### Converting: nop 
+  nop 
+### Converting: nop                     # FUNCTION: factorial
+  nop 
+function_factorial: 
+### Converting: out_int s2 
+  load 2 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: val_copy 1 s6 
+  val_copy 1 regB
+  store regB 6
+### Converting: test_equ s2 s6 s7 
+  load 2 regA
+  load 6 regB
+  test_equ regA regB regC
+  store regC 7
+### Converting: jump_if_0 s7 if_else_1 
+  load 7 regA
+  jump_if_0 regA if_else_1
+### Converting: val_copy s2 s1 
+  load 2 regA
+  val_copy regA regB
+  store regB 1
+### Converting: jump if_end_2 
+  jump if_end_2
+if_else_1: 
+if_end_2: 
+### Converting: val_copy 1 s8 
+  val_copy 1 regB
+  store regB 8
+### Converting: sub s2 s8 s9 
+  load 2 regA
+  load 8 regB
+  sub regA regB regC
+  store regC 9
+### Converting: val_copy s9 s2 
+  load 9 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_3 
+  store function_return_3 regH
+  add regH 1 regH
+### Converting: jump function_factorial 
+  jump function_factorial
+function_return_3: 
+### Converting: val_copy s1 s10 
+  load 1 regA
+  val_copy regA regB
+  store regB 10
+### Converting: mult s2 s10 s11 
+  load 2 regA
+  load 10 regB
+  mult regA regB regC
+  store regC 11
+### Converting: val_copy s11 s1 
+  load 11 regA
+  val_copy regA regB
+  store regB 1
+### Converting: pop s5 
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+  store regA 5
+### Converting: jump s5 
+  load 5 regA
+  jump regA
+define_functions_end: 

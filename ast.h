@@ -35,6 +35,9 @@ class ASTNode_VarChildren;
 // ASTNode_Random : Random command
 // ASTNode_Break : Break node
 // ASTNode_Print : Print command
+// ASTNode_FunctionDefinition : Function Definition
+// ASTNode_FunctionInvocation : Function Invocation
+// ASTNode_FunctionReturn : Function Return
 
 class ASTNode {
 protected:
@@ -61,8 +64,13 @@ public:
   // variable where the results are saved.  Call children recursively.
   virtual tableEntry * CompileTubeIC(symbolTable & table, IC_Array & ica) = 0;
 
+  virtual void CompileFunctionDefinitionsToIC(symbolTable & table, IC_Array & ica) { 
+				cout << "ERROR: Calling CompileFunctionsFromSymbolTable() in base class!" << endl;
+  }
+
   // Return the name of the node being called.  This function is useful for debbing the AST.
   virtual string GetName() { return "ASTNode (base class)"; }
+
 };
 
 
@@ -73,6 +81,7 @@ protected:
   vector<ASTNode *> children;  // What sub-trees does this node have?
 public:
   ASTNode_BaseChildren(int in_type) : ASTNode(in_type) { ; }
+  virtual void CompileFunctionDefinitionsToIC(symbolTable & table, IC_Array & ica);
   virtual ~ASTNode_BaseChildren() {
     for (int i = 0; i < (int) children.size(); i++) {
       delete children[i];
@@ -310,6 +319,50 @@ public:
   tableEntry * CompileTubeIC(symbolTable & table, IC_Array & ica);
   virtual string GetName() {
     string out_string = "ASTNode_Random";
+    return out_string;
+  }
+};
+
+class ASTNode_FunctionDefinition : public ASTNode_BaseChildren {
+protected:
+  string name;
+public:
+  ASTNode_FunctionDefinition(ASTNode * in, tableEntry * in_function);
+  virtual ~ASTNode_FunctionDefinition() { ; }
+
+  tableEntry * CompileTubeIC(symbolTable & table, IC_Array & ica);
+  virtual string GetName() {
+    string out_string = "ASTNode_FunctionDefinition";
+    return out_string;
+  }
+};
+
+class ASTNode_FunctionInvocation : public ASTNode_VarChildren {
+protected:
+  tableEntry * in_func;
+public:
+  ASTNode_FunctionInvocation(tableEntry * in_function);
+  virtual ~ASTNode_FunctionInvocation() { ; }
+
+  tableEntry * CompileTubeIC(symbolTable & table, IC_Array & ica);
+  virtual string GetName() {
+    string out_string = "ASTNode_FunctionInvocation";
+    return out_string;
+  }
+
+  void TypeCheckArgs();  // Run after args are added.
+};
+
+class ASTNode_FunctionReturn : public ASTNode_BaseChildren {
+protected:
+  tableEntry * curr_fn;
+public:
+  ASTNode_FunctionReturn(ASTNode * in, tableEntry * current_function);
+  virtual ~ASTNode_FunctionReturn() { ; }
+
+  tableEntry * CompileTubeIC(symbolTable & table, IC_Array & ica);
+  virtual string GetName() {
+    string out_string = "ASTNode_FunctionReturn";
     return out_string;
   }
 };

@@ -27,6 +27,9 @@ namespace Instr {
   DIV,
   MOD,
   RANDOM,
+  NOP,
+  PUSH,
+  POP,
   __NO_INSTRUCTION__
   };
   

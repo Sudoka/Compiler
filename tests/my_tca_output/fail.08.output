@@ -1,0 +1,1 @@
+ERROR(line 7): invalid type for param 'a', (Expected 'int', but found 'char')

@@ -4,6 +4,7 @@
 extern void yyerror(string err_string);
 extern void yyerror2(string err_string, int orig_line);
 
+void CompileFunctions(symbolTable & table, IC_Array & ica);
 
 ////////////////////////////
 //  ASTNode_VarChildren
@@ -29,9 +30,144 @@ tableEntry * ASTNode_Root::CompileTubeIC(symbolTable & table, IC_Array & ica)
       table.RemoveEntry( cur_entry );
     }
   }
+
   return NULL;
 }
 
+void ASTNode_BaseChildren::CompileFunctionDefinitionsToIC(symbolTable & table, IC_Array & ica)
+{
+  string function_label = "define_functions_end";
+  
+  ica.Add(Instr::NOP);
+  ica.Add(Instr::NOP);
+  ica.Add(Instr::NOP, -1, -1, -1, "============ FUNCTIONS ============");
+  ica.Add(Instr::JUMP, function_label, -1, -1, "Skip over function defs during normal execution");
+  ica.Add(Instr::NOP);
+
+  vector<tableEntry *> functions = table.getFunctions();
+		
+  for (int i = 0; i < functions.size(); i++)
+		{
+     ASTNode_FunctionDefinition * node = functions[i]->GetASTNode_FunctionDefinition();
+					node->CompileTubeIC(table, ica);
+		}
+
+		ica.AddLabel(function_label);
+}
+
+/////////////////////
+// ASTNode_FunctionDefinition
+
+ASTNode_FunctionDefinition::ASTNode_FunctionDefinition(ASTNode *in, tableEntry * in_function)
+  : ASTNode_BaseChildren(Type::VOID), name(in_function->GetName())
+{
+  children.push_back(in);
+}
+
+tableEntry * ASTNode_FunctionDefinition::CompileTubeIC(symbolTable & table, IC_Array & ica)
+{
+  tableEntry * out_var = table.AddTempEntry(Type::STRING);
+  ica.Add(Instr::NOP, -1, -1, -1, "FUNCTION: " + name);
+  ica.AddLabel("function_" + name);
+  children[0]->CompileTubeIC(table,ica);
+  ica.Add(Instr::POP, out_var->GetVarID());
+  ica.Add(Instr::JUMP, out_var->GetVarID());
+  return NULL;
+}
+
+/////////////////////
+// ASTNode_FunctionReturn
+
+ASTNode_FunctionReturn::ASTNode_FunctionReturn(ASTNode *in, tableEntry * current_function)
+  : ASTNode_BaseChildren(Type::VOID), curr_fn(current_function)
+{
+  if (in->GetType() != current_function->GetType()) {
+    string err_message = "incorrect return type for function '";
+    err_message += curr_fn->GetName();
+    err_message += "'.  Expected: '";
+    err_message += Type::AsString(current_function->GetType());
+    err_message += "', but found '";
+    err_message += Type::AsString(in->GetType());
+    err_message += "')";
+    yyerror(err_message);
+    exit(1);
+  }
+  children.push_back(in);
+}
+
+tableEntry * ASTNode_FunctionReturn::CompileTubeIC(symbolTable & table, IC_Array & ica)
+{
+  if (curr_fn != NULL)
+  {
+  		tableEntry * curr = children[0]->CompileTubeIC(table,ica);
+  		ica.Add(Instr::VAL_COPY, curr->GetVarID(), curr_fn->GetVarID());
+  }
+ 	return NULL;
+}
+
+/////////////////////
+// ASTNode_FunctionInvocation
+
+ASTNode_FunctionInvocation::ASTNode_FunctionInvocation(tableEntry * in_function)
+  : ASTNode_VarChildren(in_function->GetType()), in_func(in_function)
+{
+}
+
+tableEntry * ASTNode_FunctionInvocation::CompileTubeIC(symbolTable & table, IC_Array & ica)
+{
+  vector<tableEntry *> args = in_func->GetArgs();
+
+  for (int i = 0; i < children.size(); i++)
+  {
+     tableEntry * in_var = children[0]->CompileTubeIC(table, ica);
+     tableEntry * out_var = args[i];
+     
+     ica.Add(Instr::VAL_COPY, in_var->GetVarID(), out_var->GetVarID());
+  }
+
+  string function_return_label = table.NextLabelID("function_return_");
+  string function_label = "function_" + in_func->GetName();
+
+  tableEntry * out_var = table.AddTempEntry(type);
+
+  ica.Add(Instr::PUSH, function_return_label);
+  ica.Add(Instr::JUMP, function_label);
+  ica.AddLabel(function_return_label);
+  ica.Add(Instr::VAL_COPY, in_func->GetVarID(), out_var->GetVarID());
+
+  return out_var;
+}
+
+void ASTNode_FunctionInvocation::TypeCheckArgs()
+{
+  vector<tableEntry *> args = in_func->GetArgs();
+
+  if (args.size() != children.size()) {
+    string err_message = "Incorrect number of arguments provided for function '";
+    err_message += in_func->GetName();
+    err_message += "'";
+    yyerror(err_message);
+    exit(1);
+  }
+
+  for (int i = 0; i < children.size(); i++)
+  {
+     int expected_type = args[i]->GetType();
+     int arg_type = children[i]->GetType();
+
+					if (arg_type != expected_type) {
+							string err_message = "invalid type for param '";
+							err_message += args[i]->GetName();
+       err_message += "', (Expected '";
+							err_message += Type::AsString(expected_type);
+							err_message += "', but found '";
+       err_message += Type::AsString(arg_type);
+       err_message += "')";
+							yyerror(err_message);
+							exit(1);
+					}
+  }
+}
 
 /////////////////////////
 //  ASTNode_Variable

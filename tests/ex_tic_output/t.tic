@@ -1,0 +1,50 @@
+# A simple test of define w/out even calling the function...
+
+define int Inc1(int x) {
+  return x;
+}
+
+define int Inc2(int x) {
+  return x;
+}
+
+define int Inc3(int x) {
+  return x;
+}
+
+  store 5 0
+  nop
+  nop
+  nop                                   # ============ FUNCTIONS ============
+  jump define_functions_end             # Skip over function defs during normal execution
+  nop
+define_functions_end:
+
+# Ouput from Dr. Charles Ofria's sample compiler.
+  nop 
+  nop 
+  nop                                   # ============ FUNCTIONS ============
+  jump define_functions_end             # Skip over function defs during normal execution
+  nop 
+  nop                                   # FUNCTION: Inc1
+function_Inc1: 
+  val_copy s2 s1 
+  pop s7 
+  jump s7 
+  pop s8 
+  jump s8 
+  nop                                   # FUNCTION: Inc2
+function_Inc2: 
+  val_copy s4 s3 
+  pop s9 
+  jump s9 
+  pop s10 
+  jump s10 
+  nop                                   # FUNCTION: Inc3
+function_Inc3: 
+  val_copy s6 s5 
+  pop s11 
+  jump s11 
+  pop s12 
+  jump s12 
+define_functions_end: 

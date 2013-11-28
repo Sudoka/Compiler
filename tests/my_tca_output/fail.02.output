@@ -1,0 +1,1 @@
+ERROR(line 5): incorrect return type for function 'Fail2'.  Expected: 'int', but found 'char')

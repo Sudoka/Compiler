@@ -1,1 +1,62 @@
-  store 1 0
+# Matthew Wein's Compiler
+  val_copy 9 regH
+  store 10009 0
+### Converting: val_copy 72 s4 
+  val_copy 72 regB
+  store regB 4
+### Converting: val_copy s4 s2 
+  load 4 regA
+  val_copy regA regB
+  store regB 2
+### Converting: push function_return_0 
+  store function_return_0 regH
+  add regH 1 regH
+### Converting: jump function_Good 
+  jump function_Good
+function_return_0: 
+### Converting: val_copy s1 s5 
+  load 1 regA
+  val_copy regA regB
+  store regB 5
+### Converting: val_copy s5 s3 
+  load 5 regA
+  val_copy regA regB
+  store regB 3
+### Converting: out_int s3 
+  load 3 regA
+  out_int regA
+### Converting: out_char '\n'           # End print statements with a newline.
+  out_char '\n'
+### Converting: nop 
+  nop 
+### Converting: nop 
+  nop 
+### Converting: nop                     # ============ FUNCTIONS ============
+  nop 
+### Converting: jump define_functions_end # Skip over function defs during normal execution
+  jump define_functions_end
+### Converting: nop 
+  nop 
+### Converting: nop                     # FUNCTION: Good
+  nop 
+function_Good: 
+### Converting: val_copy 2 s7 
+  val_copy 2 regB
+  store regB 7
+### Converting: div s2 s7 s8 
+  load 2 regA
+  load 7 regB
+  div regA regB regC
+  store regC 8
+### Converting: val_copy s8 s1 
+  load 8 regA
+  val_copy regA regB
+  store regB 1
+### Converting: pop s6 
+  sub regH 1 regH                       # Decrement stack to prev mem position
+  load regH regA                        # Load stored value from the stack.
+  store regA 6
+### Converting: jump s6 
+  load 6 regA
+  jump regA
+define_functions_end: 

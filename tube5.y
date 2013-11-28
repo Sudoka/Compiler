@@ -16,6 +16,7 @@ extern string out_filename;
  
 symbolTable symbol_table;
 int error_count = 0;
+tableEntry * current_function = NULL;
 
 // Create an error function to call when the current line has an error
 void yyerror(string err_string) {
@@ -61,18 +62,18 @@ void yyerror2(string err_string, int orig_line) {
 %nonassoc COMMAND_ELSE
 
 
-%type <ast_node> var_declare expression declare_assign statement statement_list var_usage array_index lhs_ok command argument_list argument code_block
+%type <ast_node> var_declare expression function_definition function_start function_return function_argument_list function_argument declare_assign statement statement_list var_usage array_index lhs_ok command argument_list argument code_block
 %type <ast_node_children> if_start while_start flow_command
 %%
 
 program:      statement_list {
                  IC_Array ic_array;                         // Array to contain the intermediate code
                  $1->CompileTubeIC(symbol_table, ic_array); // Traverse AST, filling ic_array with code
-
+																	$1->CompileFunctionDefinitionsToIC(symbol_table, ic_array);
                  ofstream out_file(out_filename.c_str());   // Open the output file
                  ic_array.PrintTC(symbol_table, out_file);  // Write TC to output file!
               }
-	     ;
+;
 
 statement_list:	 {
 	           $$ = new ASTNode_Root;
@@ -80,50 +81,19 @@ statement_list:	 {
        	|        statement_list statement {
                    if ($2 != NULL) $1->AddChild($2);
                    $$ = $1;
-		 }
+}
+;
+
+statement:   var_declare ENDLINE     {  $$ = $1;   }
+	       |    declare_assign ENDLINE  {  $$ = $1;   }
+       	|    expression ENDLINE      {  $$ = $1;   }
+	       |    command ENDLINE         {  $$ = $1;   }
+        |    function_definition     {  $$ = NULL; }
+        |    function_return ENDLINE {  $$ = $1;   }
+        |    flow_command            {  $$ = $1;   }
+        |    code_block              {  $$ = $1;   } 
+        |    ENDLINE                 {  $$ = NULL; }
 	;
-
-statement:   var_declare ENDLINE    {  $$ = $1;  }
-        |    function_declare          { ; }
-        |    function_return_statement { ; }
-	       |    declare_assign ENDLINE {  $$ = $1;  }
-       	|    expression ENDLINE     {  $$ = $1;  }
-	       |    command ENDLINE        {  $$ = $1;  }
-        |    flow_command           {  $$ = $1;  }
-        |    code_block             {  $$ = $1;  }
-        |    ENDLINE                {  $$ = NULL;  }
-	;
-
-function_declare: function_declare_with_args | function_declare_no_args;
-
-function_declare_with_args: FUNCTION_DEFINE TYPE ID '(' function_argument_list ')' statement {
-
-}
-;
-
-function_declare_no_args: FUNCTION_DEFINE TYPE ID '(' ')' statement {
-    
-    string return_type_name = $2;
-    int return_type_id = 0;
-
-    if (return_type_name == "int") return_type_id = Type::INT;
-		  else if (return_type_name == "char") return_type_id = Type::CHAR;
-		  else if (return_type_name == "string") return_type_id = Type::STRING;
-		  else {
-		    string err_string = "unknown type '";
-		    err_string += $2;
-                    err_string += "'";
-		    yyerror(err_string);
-		  }
-
-    symbol_table.AddEntry(return_type_id, $3);
-}
-;
-
-function_return_statement: FUNCTION_RETURN expression {
-
-}
-;
 
 var_declare:	TYPE ID {
 	          if (symbol_table.Lookup($2) != 0) {
@@ -182,7 +152,7 @@ declare_assign:  var_declare '=' expression {
 
 var_usage:   ID {
 	       tableEntry * cur_entry = symbol_table.Lookup($1);
-               if (cur_entry == NULL) {
+               if (cur_entry == NULL || cur_entry->GetFunction()) {
 		 string err_string = "unknown variable '";
 		 err_string += $1;
                  err_string += "'";
@@ -303,11 +273,11 @@ expression:  expression '+' expression {
              }
 	|    var_usage { $$ = $1; }
 	|    array_index { $$ = $1; }
-        |    expression '.' ID '(' ')' {
+ |    expression '.' ID '(' ')' {
                $$ = new ASTNode_Method($1, $3);
                $$->SetLineNum(line_num);
              }
-        |    expression '.' ID '(' argument_list ')' {
+ |    expression '.' ID '(' argument_list ')' {
                ASTNode_Method * node = new ASTNode_Method($1, $3);
 	       node->TransferChildren((ASTNode_VarChildren *) $5);
 	       delete $5;
@@ -315,21 +285,58 @@ expression:  expression '+' expression {
                $$ = node;
                $$->SetLineNum(line_num);
              }
-       |   COMMAND_RANDOM '(' expression ')' {
+ |   COMMAND_RANDOM '(' expression ')' {
                $$ = new ASTNode_Random($3);
                $$->SetLineNum(line_num);
             }
+ |   ID '(' ')' {
+               tableEntry * curr_function = symbol_table.Lookup($1);
+               if (curr_function == NULL)
+               {
+		                  string err_string = "function not defined '";
+		                  err_string += $1;
+                    err_string += "'";
+                    yyerror(err_string);
+		                  exit(1);
+               }
+               if (!curr_function->GetFunction())
+               {
+		                  string err_string = "variable not a function '";
+		                  err_string += $1;
+                    err_string += "'";
+                    yyerror(err_string);
+		                  exit(1);
+               }
+  													$$ = new ASTNode_FunctionInvocation(curr_function);
+               $$->SetLineNum(line_num);
+ } 
+ |  ID '(' argument_list ')' {
+               tableEntry * curr_function = symbol_table.Lookup($1);
+               if (curr_function == NULL)
+               {
+		                  string err_string = "function not defined '";
+		                  err_string += $1;
+                    err_string += "'";
+                    yyerror(err_string);
+		                  exit(1);
+               }
+               if (!curr_function->GetFunction())
+               {
+		                  string err_string = "not a function '";
+		                  err_string += $1;
+                    err_string += "'";
+                    yyerror(err_string);
+		                  exit(1);
+               }
+
+               ASTNode_FunctionInvocation * node = new ASTNode_FunctionInvocation(curr_function);
+               node->TransferChildren((ASTNode_VarChildren *) $3);
+               delete $3;
+               node->TypeCheckArgs();
+               $$ = node;
+               $$->SetLineNum(line_num);
+ }
 	;
-
-function_argument_list: function_argument_list ',' function_argument {
-
-   }
-   | function_argument {
-
-   }
-   ;
-
-function_argument: TYPE ID { ; }
 
 argument_list:	argument_list ',' argument {
 		  ASTNode * node = $1; // Grab the node used for arg list.
@@ -385,6 +392,114 @@ flow_command:  if_start statement COMMAND_ELSE statement {
                  $$->SetChild(1, $2);
                }
             ;
+
+function_definition: function_start function_end statement {
+    if (current_function == NULL)
+    {
+       string err_string = "this shouldn't happen...";
+       yyerror(err_string);
+		     exit(1);
+    }
+
+    current_function->SetASTNode_FunctionDefinition(new ASTNode_FunctionDefinition($3, current_function));
+    current_function = NULL;
+}
+
+function_start: FUNCTION_DEFINE TYPE ID '(' {
+    symbol_table.IncScope();
+    
+    tableEntry * curr = symbol_table.Lookup($3);
+    if (curr != NULL)
+    {
+      string err_string;
+
+      if (curr->GetFunction())
+      {
+		      err_string = "re-defining function '";
+      }
+      else
+      {
+        err_string = "variable already defined '";
+      }
+
+		    err_string += $3;
+                    err_string += "'";
+                    yyerror(err_string);
+		    exit(1);
+    }
+
+    string return_type_name = $2;
+    int return_type_id = 0;
+
+    if (return_type_name == "int") return_type_id = Type::INT;
+		  else if (return_type_name == "char") return_type_id = Type::CHAR;
+		  else if (return_type_name == "string") return_type_id = Type::STRING;
+		  else {
+		    string err_string = "unknown return type '";
+		    err_string += $2;
+                    err_string += "'";
+		    yyerror(err_string);
+		  }
+
+    current_function = symbol_table.AddFunction(return_type_id, $3);
+}
+;
+
+function_end: function_argument_list ')' | ')';
+
+function_argument_list: function_argument_list ',' function_argument {
+
+   }
+   | function_argument {
+
+}
+;
+
+function_argument: TYPE ID {
+					if (current_function != NULL) //never should happen
+     {
+       if (symbol_table.Lookup($2) != 0)
+       {
+		        string err_string = "re-defining variable '";
+		        err_string += $2;
+          err_string += "'";
+          yyerror(err_string);
+		        exit(1);
+       }
+		     string type_name = $1;
+		     int type_id = 0;
+		     if (type_name == "int") type_id = Type::INT;
+		     else if (type_name == "char") type_id = Type::CHAR;
+		     else if (type_name == "string") type_id = Type::STRING;
+		     else {
+		       string err_string = "unknown type '";
+		       err_string += $1;
+         err_string += "'";
+		       yyerror(err_string);
+		     }
+	      
+       tableEntry * cur_entry = symbol_table.AddEntry(type_id, $2);
+       $$ = new ASTNode_Variable(cur_entry);
+       $$->SetLineNum(line_num);
+       current_function->AddArg(cur_entry);
+	    }
+}
+;
+
+function_return: FUNCTION_RETURN expression {
+  if (current_function == NULL)
+  {
+     
+  }
+
+  if ($2->GetType() != current_function->GetType())
+  {
+				
+  }
+
+		$$ = new ASTNode_FunctionReturn($2, current_function);
+}
+;
 
 block_start: '{' { symbol_table.IncScope(); } ;
 block_end:   '}' { symbol_table.DecScope(); } ;
